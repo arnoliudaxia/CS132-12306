@@ -1,0 +1,798 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan request;
+chan error;
+chan failure;
+chan success;
+
+const int N=2;
+typedef int[0,N-1] id_t;
+</declaration>
+	<template>
+		<name x="5" y="5">ATM</name>
+		<parameter>const id_t id</parameter>
+		<declaration>// Place local declarations here
+bool isExit = false;
+bool isEnter = false;
+
+clock t;
+clock x;</declaration>
+		<location id="id0" x="119" y="-264">
+			<name x="109" y="-298">Entry</name>
+			<label kind="invariant" x="94" y="-255">t&lt;=0</label>
+		</location>
+		<location id="id1" x="263" y="-264">
+			<name x="253" y="-298">Login</name>
+			<label kind="invariant" x="254" y="-281">t&lt;=60</label>
+		</location>
+		<location id="id2" x="263" y="0">
+			<urgent/>
+		</location>
+		<location id="id3" x="408" y="-264">
+			<name x="398" y="-298">Main</name>
+			<label kind="invariant" x="348" y="-238">t&lt;=300 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id4" x="552" y="-264">
+			<urgent/>
+		</location>
+		<location id="id5" x="552" y="-179">
+			<urgent/>
+		</location>
+		<location id="id6" x="552" y="-94">
+			<urgent/>
+		</location>
+		<location id="id7" x="552" y="0">
+			<urgent/>
+		</location>
+		<location id="id8" x="688" y="-264">
+			<name x="662" y="-298">Withdraw</name>
+			<label kind="invariant" x="645" y="-255">t&lt;=60 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id9" x="722" y="-382">
+			<name x="712" y="-416">Deposit</name>
+			<label kind="invariant" x="671" y="-374">t&lt;=60 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id10" x="756" y="-493">
+			<name x="746" y="-527">Transfer</name>
+			<label kind="invariant" x="713" y="-501">t&lt;=60 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id11" x="688" y="-604">
+			<urgent/>
+		</location>
+		<location id="id12" x="807" y="-264">
+			<urgent/>
+		</location>
+		<location id="id13" x="841" y="-381">
+			<urgent/>
+		</location>
+		<location id="id14" x="866" y="-493">
+			<urgent/>
+		</location>
+		<location id="id15" x="807" y="-603">
+			<urgent/>
+		</location>
+		<location id="id16" x="985" y="-382">
+			<name x="975" y="-416">Result</name>
+			<label kind="invariant" x="975" y="-365">t&lt;=60 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id17" x="1011" y="-493">
+			<name x="1001" y="-527">Error2</name>
+			<label kind="invariant" x="1001" y="-476">t&lt;=60 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id18" x="263" y="-136">
+			<name x="246" y="-170">Error1</name>
+			<label kind="invariant" x="246" y="-119">t&lt;=60</label>
+		</location>
+		<location id="id19" x="1070" y="-603">
+			<name x="1060" y="-637">Bill</name>
+			<label kind="invariant" x="1011" y="-620">t&lt;=300 &amp;&amp; x&lt;=600</label>
+		</location>
+		<location id="id20" x="824" y="0">
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="guard" x="476" y="-238">t&gt;=300</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id20"/>
+			<label kind="assignment" x="663" y="0">isExit=true</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id5"/>
+			<label kind="guard" x="994" y="-94">x&gt;=600</label>
+			<nail x="1070" y="-77"/>
+			<nail x="654" y="-77"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="331" y="-586">t=0</label>
+			<nail x="1070" y="-654"/>
+			<nail x="331" y="-654"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="858" y="-620">success?</label>
+			<label kind="assignment" x="866" y="-603">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="892" y="-586">error?</label>
+			<label kind="assignment" x="900" y="-569">t=0</label>
+			<nail x="1011" y="-544"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="603" y="-705">failure?</label>
+			<label kind="assignment" x="356" y="-612">t=0</label>
+			<nail x="807" y="-688"/>
+			<nail x="365" y="-688"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id11"/>
+			<nail x="985" y="-518"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id5"/>
+			<label kind="guard" x="892" y="-128">x&gt;=600</label>
+			<nail x="1011" y="-111"/>
+			<nail x="747" y="-111"/>
+			<nail x="688" y="-111"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id5"/>
+			<label kind="guard" x="773" y="-162">x&gt;=600</label>
+			<nail x="985" y="-145"/>
+			<nail x="722" y="-145"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="819" y="-481">failure?</label>
+			<nail x="807" y="-459"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="884" y="-454">success?</label>
+			<label kind="assignment" x="884" y="-437">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="909" y="-510">error?</label>
+			<label kind="assignment" x="917" y="-493">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id5"/>
+			<label kind="guard" x="688" y="-196">x&gt;=600</label>
+			<nail x="756" y="-179"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="484" y="-493">t=0</label>
+			<nail x="458" y="-493"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="866" y="-425">error?</label>
+			<label kind="assignment" x="875" y="-416">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="858" y="-399">success?</label>
+			<label kind="assignment" x="859" y="-381">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="798" y="-374">failure?</label>
+			<nail x="781" y="-340"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id5"/>
+			<label kind="guard" x="654" y="-221">x&gt;=600</label>
+			<nail x="722" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="476" y="-382">t=0</label>
+			<nail x="458" y="-382"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="433" y="-612">t=0</label>
+			<nail x="1113" y="-493"/>
+			<nail x="1113" y="-722"/>
+			<nail x="450" y="-722"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="399" y="-629">t=0</label>
+			<nail x="1155" y="-382"/>
+			<nail x="1155" y="-756"/>
+			<nail x="407" y="-756"/>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id2"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="314" y="-179">t&gt;=60</label>
+			<nail x="339" y="-136"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id18"/>
+			<label kind="guard" x="254" y="-238">t&lt;=60</label>
+			<label kind="synchronisation" x="263" y="-221">failure?</label>
+			<label kind="assignment" x="271" y="-204">t=0</label>
+			<nail x="280" y="-196"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id18"/>
+			<label kind="guard" x="220" y="-238">t&lt;=60</label>
+			<label kind="synchronisation" x="212" y="-221">error?</label>
+			<label kind="assignment" x="220" y="-204">t=0</label>
+			<nail x="246" y="-196"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="841" y="-340">error?</label>
+			<label kind="assignment" x="849" y="-323">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="841" y="-289">success?</label>
+			<label kind="assignment" x="841" y="-272">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="756" y="-238">failure?</label>
+			<nail x="739" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="475" y="-314">t=0</label>
+			<nail x="688" y="-314"/>
+			<nail x="450" y="-314"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id5"/>
+			<label kind="guard" x="586" y="-230">x&gt;=600</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="713" y="-620">request!</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id14"/>
+			<label kind="guard" x="764" y="-518">t&lt;=60 &amp;&amp; x&lt;=600</label>
+			<label kind="synchronisation" x="790" y="-510">request!</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id13"/>
+			<label kind="guard" x="739" y="-408">t&lt;=60 &amp;&amp; x&lt;=600</label>
+			<label kind="synchronisation" x="740" y="-398">request!</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id12"/>
+			<label kind="guard" x="705" y="-289">t&lt;=60 &amp;&amp; x&lt;=600</label>
+			<label kind="synchronisation" x="713" y="-281">request!</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="509" y="-77">error?</label>
+			<nail x="526" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id11"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id10"/>
+			<label kind="assignment" x="671" y="-433">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id9"/>
+			<label kind="assignment" x="654" y="-357">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id8"/>
+			<label kind="assignment" x="603" y="-264">t=0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id7"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="577" y="-77">failure?</label>
+			<nail x="577" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="526" y="-51">success?</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="526" y="-145">request!</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="guard" x="433" y="-196">x&gt;=600</label>
+			<nail x="407" y="-179"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="guard" x="433" y="-289">t&lt;=300 &amp;&amp; x&lt;=600</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="guard" x="322" y="-289">t&lt;=60</label>
+			<label kind="synchronisation" x="314" y="-281">success?</label>
+			<label kind="assignment" x="323" y="-264">t=0,x=0</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="guard" x="119" y="-145">t&gt;=0</label>
+			<nail x="119" y="0"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="162" y="-290">t&gt;=0</label>
+			<label kind="synchronisation" x="162" y="-281">request!</label>
+			<label kind="assignment" x="153" y="-264">t=0,isEnter=true</label>
+		</transition>
+	</template>
+	<template>
+		<name>APP</name>
+		<parameter>const id_t id</parameter>
+		<declaration>bool isExit = false;
+bool isEnter = false;
+
+clock x;</declaration>
+		<location id="id21" x="-8" y="-9">
+			<name x="-18" y="-43">Entry</name>
+			<label kind="invariant" x="-33" y="0">x&lt;=0</label>
+		</location>
+		<location id="id22" x="136" y="-9">
+			<name x="126" y="-43">Login</name>
+		</location>
+		<location id="id23" x="136" y="255">
+			<urgent/>
+		</location>
+		<location id="id24" x="281" y="-9">
+			<name x="271" y="-43">Main</name>
+			<label kind="invariant" x="255" y="8">x&lt;=1800</label>
+		</location>
+		<location id="id25" x="425" y="-9">
+			<urgent/>
+		</location>
+		<location id="id26" x="425" y="76">
+			<urgent/>
+		</location>
+		<location id="id27" x="425" y="161">
+			<urgent/>
+		</location>
+		<location id="id28" x="425" y="255">
+			<urgent/>
+		</location>
+		<location id="id29" x="629" y="-238">
+			<name x="619" y="-272">Transfer</name>
+			<label kind="invariant" x="612" y="-221">x&lt;=1800</label>
+		</location>
+		<location id="id30" x="561" y="-349">
+			<urgent/>
+		</location>
+		<location id="id31" x="739" y="-238">
+			<urgent/>
+		</location>
+		<location id="id32" x="680" y="-348">
+			<urgent/>
+		</location>
+		<location id="id33" x="858" y="-127">
+			<name x="848" y="-161">Result</name>
+			<label kind="invariant" x="848" y="-110">x&lt;=1800</label>
+		</location>
+		<location id="id34" x="884" y="-238">
+			<name x="874" y="-272">Error2</name>
+			<label kind="invariant" x="874" y="-221">x&lt;=1800</label>
+		</location>
+		<location id="id35" x="136" y="119">
+			<name x="119" y="85">Error1</name>
+			<urgent/>
+		</location>
+		<location id="id36" x="943" y="-348">
+			<name x="933" y="-382">Bill</name>
+			<label kind="invariant" x="884" y="-365">x&lt;=1800</label>
+		</location>
+		<location id="id37" x="697" y="255">
+		</location>
+		<location id="id38" x="662" y="-9">
+			<urgent/>
+		</location>
+		<location id="id39" x="781" y="-8">
+			<urgent/>
+		</location>
+		<location id="id40" x="986" y="-8">
+			<name x="969" y="-42">Profile</name>
+			<label kind="invariant" x="961" y="8">x&lt;=1800</label>
+		</location>
+		<init ref="id21"/>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id24"/>
+			<nail x="986" y="-85"/>
+			<nail x="323" y="-85"/>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id34"/>
+			<label kind="synchronisation" x="892" y="68">error?</label>
+			<nail x="782" y="68"/>
+			<nail x="918" y="68"/>
+			<nail x="918" y="-161"/>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id26"/>
+			<label kind="guard" x="926" y="195">x&gt;=1800</label>
+			<nail x="986" y="212"/>
+			<nail x="501" y="212"/>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="671" y="-144">failure?</label>
+			<nail x="782" y="-127"/>
+			<nail x="323" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id26"/>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id37"/>
+			<label kind="assignment" x="536" y="255">isExit=true</label>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id26"/>
+			<label kind="guard" x="867" y="161">x&gt;=1800</label>
+			<nail x="943" y="178"/>
+			<nail x="527" y="178"/>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id24"/>
+			<nail x="943" y="-399"/>
+			<nail x="204" y="-399"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="731" y="-365">success?</label>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id34"/>
+			<label kind="synchronisation" x="765" y="-331">error?</label>
+			<nail x="884" y="-289"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="476" y="-450">failure?</label>
+			<nail x="680" y="-433"/>
+			<nail x="238" y="-433"/>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id30"/>
+			<nail x="858" y="-263"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id26"/>
+			<label kind="guard" x="765" y="127">x&gt;=1800</label>
+			<nail x="884" y="144"/>
+			<nail x="620" y="144"/>
+			<nail x="561" y="144"/>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id26"/>
+			<label kind="guard" x="646" y="93">x&gt;=1800</label>
+			<nail x="858" y="110"/>
+			<nail x="595" y="110"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="692" y="-226">failure?</label>
+			<nail x="680" y="-204"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="757" y="-199">success?</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id34"/>
+			<label kind="synchronisation" x="782" y="-255">error?</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id26"/>
+			<label kind="guard" x="561" y="59">x&gt;=1800</label>
+			<nail x="629" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id24"/>
+			<nail x="331" y="-238"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id24"/>
+			<nail x="986" y="-238"/>
+			<nail x="986" y="-467"/>
+			<nail x="323" y="-467"/>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id24"/>
+			<nail x="1028" y="-127"/>
+			<nail x="1028" y="-501"/>
+			<nail x="280" y="-501"/>
+		</transition>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id23"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id23"/>
+			<nail x="212" y="119"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="136" y="34">failure?</label>
+			<nail x="153" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="85" y="34">error?</label>
+			<nail x="119" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="586" y="-365">request!</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id31"/>
+			<label kind="guard" x="663" y="-263">x&lt;=1800</label>
+			<label kind="synchronisation" x="663" y="-255">request!</label>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="382" y="178">error?</label>
+			<nail x="399" y="204"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id30"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id29"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id28"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="450" y="178">failure?</label>
+			<nail x="450" y="204"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="399" y="204">success?</label>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="399" y="110">request!</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id26"/>
+			<label kind="guard" x="306" y="59">x&gt;=1800</label>
+			<nail x="280" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id25"/>
+			<label kind="guard" x="306" y="-34">x&lt;=1800</label>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="187" y="-26">success?</label>
+			<label kind="assignment" x="196" y="-9">x=0</label>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id23"/>
+			<label kind="guard" x="-8" y="110">x&gt;=0</label>
+			<nail x="-8" y="255"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id22"/>
+			<label kind="guard" x="35" y="-35">x&gt;=0</label>
+			<label kind="synchronisation" x="35" y="-26">request!</label>
+			<label kind="assignment" x="26" y="-9">x=0,isEnter=true</label>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id40"/>
+			<label kind="synchronisation" x="850" y="-25">success?</label>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="687" y="-25">request!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Backend</name>
+		<location id="id41" x="-1649" y="-807">
+		</location>
+		<location id="id42" x="-1504" y="-807">
+			<committed/>
+		</location>
+		<location id="id43" x="-1411" y="-867">
+			<committed/>
+		</location>
+		<location id="id44" x="-1411" y="-807">
+			<committed/>
+		</location>
+		<location id="id45" x="-1411" y="-748">
+			<committed/>
+		</location>
+		<location id="id46" x="-1309" y="-807">
+			<committed/>
+		</location>
+		<init ref="id41"/>
+		<transition>
+			<source ref="id46"/>
+			<target ref="id41"/>
+			<nail x="-1309" y="-909"/>
+			<nail x="-1649" y="-909"/>
+		</transition>
+		<transition>
+			<source ref="id45"/>
+			<target ref="id46"/>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-1487" y="-790">failure!</label>
+		</transition>
+		<transition>
+			<source ref="id44"/>
+			<target ref="id46"/>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-1479" y="-824">error!</label>
+		</transition>
+		<transition>
+			<source ref="id43"/>
+			<target ref="id46"/>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id43"/>
+			<label kind="synchronisation" x="-1479" y="-858">success!</label>
+		</transition>
+		<transition>
+			<source ref="id41"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-1590" y="-824">request?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+// List one or more processes to be composed into a system.
+system Backend,APP,ATM;
+</system>
+	<queries>
+		<query>
+			<formula>A[] forall(i: id_t) ATM(i).isEnter imply (ATM(i).x &lt;= 600 || ATM(i).isExit)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forall(i: id_t) ATM(i).isEnter imply ATM(i).isExit</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] forall(i: id_t) ATM(i).isEnter imply (ATM(i).t &lt;= 300 || ATM(i).isExit)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] forall(i: id_t) APP(i).isEnter imply (APP(i).x &lt;= 1800 || APP(i).isExit)
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forall(i: id_t) APP(i).isEnter imply APP(i).isExit</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>

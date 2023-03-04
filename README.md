@@ -1,92 +1,140 @@
-# template
+# CS132: Software Engineering
 
+This template should help get you started developing the final project of Software Engineering with MATLAB. You are required to follow the conventions set by this template so that the teaching staff can run your code properly and find the documents easily.
 
+## Recommended IDE Setup
 
-## Getting started
+- [MATLAB 2021b](https://software.shanghaitech.edu.cn/)
+- (Optional) [VS Code](https://code.visualstudio.com/) + [Matlab](https://marketplace.visualstudio.com/items?itemName=Gimly81.matlab) + [matlab-formatter](https://marketplace.visualstudio.com/items?itemName=AffenWiesel.matlab-formatter) + [Octave Debugger](https://marketplace.visualstudio.com/items?itemName=paulosilva.vsc-octave-debugger) (and install GNU Octave)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+**Note that you should use and only use MATLAB 2021b in your project. Other version of MATLAB is not accepted.**
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## File Structure
 
-## Add your files
+This template is structured as below: 
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+```bash
+template
+|  .editorconfig
+│  .gitignore
+│  env.m
+│  index.m
+│  README.md
+├─.vscode
+├─assets
+├─docs
+│  ├─manual
+│  ├─report
+│  ├─requirement
+│  ├─specification
+│  └─validation
+├─src
+│      main.m
+└─tests
+    ├─unittest
+    └─uppaal
 ```
-cd existing_repo
-git remote add origin http://cs132.hcps.tech/yanglinshu/template.git
-git branch -M main
-git push -uf origin main
-```
 
-## Integrate with your tools
+- `env.m`: This file is where your project initializations takes place. These initializations may include: environment setup, database connection, etc. It is guaranteed to executed before the execution of your application and testing.
+- `index.m`: This file is the entrypoint for the teaching staff to run your project. You should also run your application from it in development stage. When teaching staff is running your project, It is guaranteed that the `env.m` will be executed before the execution of your application. However, the rest  may differ from what you anticipated, so your code should have zero dependency to this file.
+- **assets**: This directory is where you keep your static files.
+- **docs**: This directory is where you keep all your documents.
+  - **manual**: This directory is where you keep your manual. A [manual](./docs/manual/Manual.pdf) from last year is given as a reference.
+  - **report**: This directory is where you keep your weekly meeting reports and summaries before each consultation. An [example](./docs/report/Team_0_Week_0_Report.md) is given as a reference.
+  - **requirement**: This directory is where you keep your requirement related documents. A [requirement document](./docs/requirement/Requirement.pdf) and a [traceability document](./docs/requirement/Traceability.pdf) from last year is given as a reference.
+  - **specification**: This directory is where you keep your development specification documents. A [specification document](./docs/specification/Specifications.pdf) from last year is given as a reference.
+  - **validation**: This directory is where you keep your validation documents. A [validation document](./docs/validation/Validation.pdf) from last year is given as a reference.
+- **src**: This directory is where you keep your source code.
+  - `main.m`: This is the real entrypoint of your application. Except from the environment setup in `env.m`, your application should start from here. A toy project is given for you as reference.
+- **tests**: This directory is where you keep your testing files.
+  - **unittest**: This directory is where you keep your unit test code. A toy test is given for you as reference. Apart from this folder, you are free to add other folders to conduct other forms of testing.
+  - **uppaal**: This directory is where you keep your model checking files. An UPPAAL file from last year is given as reference.
 
-- [ ] [Set up project integrations](http://cs132.hcps.tech/yanglinshu/template/-/settings/integrations)
+## Project Description
 
-## Collaborate with your team
+In CS132: Software Engineering, each team is required to finish 3 projects, with each teammate playing different roles in different projects.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+- **Elevator**
+  - A building with 3 floors
+  - 2 elevators (should be coordinated)
+  - Interfaces
+    - Button panels and display inside each elevator
+    - Button panels and display on each floor
+  - Sensors
+    - Door open, door closed
+    - Elevator arrive at each floor
+  - Controller actions
+    -  Open door, close door, move up, move down, stop
+- **Huarong Path**
+  - Interface
+    -  Visualize current state
+  - Initial state
+    - Standard
+    - Random (Use UPPAAL to find solution)
+- **12306**
+  - Design a system for booking train tickets
+  - System Backend
+    - A bidirectional railway route with k stations 
+    - n trains every day 
+      - Departure and destination can be a subsection of the route 
+      - Fixed schedule (always on time) 
+      - Each train has m seats 
+    - Display the state of each train 
+      - Location, seat occupation 
+    - State of the passenger (checked in/at gate/on the train
+  - APP 
+    - Show available train tickets for given departure, destination, departure  time and date 
+    - Book, cancel, reschedule tickets 
+    - Multiple APPs should be able to run simultaneously 
+    - Rules are similar to the real 12306
 
-## Test and Deploy
+Each role is specified below: 
 
-Use the built-in continuous integration in GitLab.
+- **Requirement**
+  - UML diagrams
+    - Collaborate with development guy/gal
+  - Model of system environment for validation 
+    - Collaborate with validation guy/gal
+  - Traceability report 
+    - Collaborate with both development and validation 
+    - Focus on requirement
+  - User Manual
+- **Development**
+  - Detailed UML diagrams reflecting actual design 
+    - Collaborate with requirement guy/gal
+  - Implementation of the design
+  - Traceability report
+    - Collaborate with both requirement and validation
+    -  Focus on specification, model translation and code
+- **Validation**
+  - Validation planning and execution
+  - Risk Management 
+  - Testing 
+  - Model checking  
+  - Traceability 
+    - Collaborate with other two guys/gals 
+    - Focus on test case, models in model checking
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Weekly Routine
 
-***
+Every week your team should hold a development meeting and upload the weekly report. Before every consultation, your team should upload a summary covering the progress of your project in the past period.
 
-# Editing this README
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## MATLAB Tricks
 
-## Name
-Choose a self-explaining name for your project.
+MATLAB is handy for scientific computing, but can be hard for developing a large software. Here are some MATLAB tricks that may useful for your development.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- The Language
+  - MATLAB is a scripting language. Unlike Python, MATLAB is interpreted line by line, which means that you can change your code and set breakpoints even in the middle of debugging.
+  - MATLAB is single-threaded, which means that any blocking will stop the execution of the whole program. You are recommend to save callbacks and execute them in an asynchronized manner.
+  - MATLAB is a dynamic and dynamic, weak-typed language. This means many bugs in your code can only be found at runtime. It is advised to use `isa(var, typename)` or `class(var)` to make type assertions in your code. 
+- Functions and Classes
+  - MATLAB allows you to define multiple functions and classes in one file, but only the one with the same name as the file will be exported.
+  - MATLAB defines its return value in the declaration of the function. You can define multiple return values by wrapping them with `[].`
+  - Default MATLAB objects are passed by value. When defining a Class, inherit from `handle` will make its instances passed by reference.
+  - `struct` in MATLAB can be helpful for data-only classes.
+- Closures and Lambdas
+  - Function inside a function is allowed in MATLAB, and the environment is captured automatically. Here we call this kind of function a closure.
+  - Default lambdas `@()...` in MATLAB only contains one line of code. However, you can write more complicated code in a closure and execute it inside a lambda.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
