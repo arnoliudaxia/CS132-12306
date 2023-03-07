@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+left to right direction
+
+:Passenger: as ps
+
+package TrainDispatch{
+
+ps -> (CheckMyStatus)
+
+ps --> (CheckMyTickets)
+
+ps -->(Book Ticket)
+
+}
+
+@enduml
