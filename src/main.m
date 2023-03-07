@@ -4,8 +4,11 @@
 % a reference and remove it when you start your own project.
 
 % Initialize the UI and the controller.
-ui = view();
-controller = counter();
-ui.constructor(counter);
+% ui = view();
+% controller = counter();
+% ui.constructor(counter);
+ui= query();
+
+
 
 % * YOUR CODE HERE *

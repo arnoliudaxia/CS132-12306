@@ -3,5 +3,6 @@
 
 % Set the path to include all subdirectories
 addpath(genpath('.'));
-
+addpath("assets");
+addpath("src");
 % * YOUR CODE HERE *

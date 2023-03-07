@@ -1,53 +1,39 @@
-### Team17 Week 4 Report
-
----
+# Team17 Week 4 Report
 
 Participants: Liu Yifei, Ye Hengwei, Li Shuhang
 
 Meeting Date: 2023/3/3
 
-Project Leader: Li Shuhang(Requirement)
+Project Leader: Liu Yifei(Requirement)
 
 ---
 
-#### Summary
+### Summary
 
-Liu Yifei: write project **document templates**
+Liu Yifei
 
-Ye Hengwei: experience software and propose **UI design** scheme
+- create project wiki
+- write basic **requirements document**
+- create basic UML
+
+Ye Hengwei
+
+- attend meeting
 
 Li Shuhang:
 
-1. Complete the beginning of the **requirements document**
-2. Sketch a simple **Use Case Diagram** to describe the system roughly
-
-complete together:
-
-1. Collect and sort out **user requirements**
-
-   - functional : online booking,  passenger information, train information...
-   - non-functional : booking tickets for others, special passengers...
-   - domain : realize the general booking process, UI design of booking software
-
-2. Simple **risk analysis**
-
-   - can't update in time 
-
-   - UI design doesn't balances functionality and humanity
+- attend meeting
 
 ---
 
-#### Questions prepared for the instructor team
+### Questions prepared for the instructor team
 
-Not yet...
+TBD
 
 ---
 
-#### Action Items (**Plan For Next Week**):
+### Action Items (**Plan For Next Week**):
 
-Liu Yifei: write a demo
+Liu Yifei: collaborate with Le
 
-Ye Hengwei: setting validation plans.  
-
-Li Shuhang: refine and draw more different types of UML diagrams
-
+Li Shuhang: demo
