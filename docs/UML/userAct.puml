@@ -1,38 +1,30 @@
 @startuml
-'https://plantuml.com/activity-diagram-beta
 
 start
-:TrainDispatch.requestMyStatus();
-:TrainDispatch.requestMyTickets();
-
-
-'if (Page.onSecurityCheck) then (true)
-'  :Page.onInit();
-'  if (isForward?) then (no)
-'    :Process controls;
-'    if (continue processing?) then (no)
-'      stop
-'    endif
-'
-'    if (isPost?) then (yes)
-'      :Page.onPost();
-'    else (no)
-'      :Page.onGet();
-'    endif
-'    :Page.onRender();
-'  endif
-'else (false)
-'endif
-'
-'if (do redirect?) then (yes)
-'  :redirect process;
-'else
-'  if (do forward?) then (yes)
-'    :Forward request;
-'  else (no)
-'    :Render page template;
-'  endif
-'endif
+if (Buy tickets?) then (yes)
+  :Select departure station;
+  :Select arrival station;
+  :Select travel date;
+  :Search for available trains;
+  if (Trains found?) then (yes)
+    :Select train;
+    :Choose seat type;
+    :Enter passenger information;
+    :Confirm and pay;
+  else (no)
+    :Display no available trains message;
+    :Return to the main page;
+  endif
+else (check account)
+  :Display owned tickets;
+  if (reschedule?) then (yes)
+    :Replace it with a new ticket;
+  elseif (cancel?) then (yes)
+    :Delete the ticket;
+  else (no)
+    :Return to the main page;
+  endif
+endif
 
 stop
 
