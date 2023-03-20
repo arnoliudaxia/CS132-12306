@@ -1,17 +1,25 @@
 @startuml
-'https://plantuml.com/use-case-diagram
 left to right direction
 
-:Passenger: as ps
+actor User
 
-package TrainDispatch{
-
-ps -> (CheckMyStatus)
-
-ps --> (CheckMyTickets)
-
-ps -->(Book Ticket)
-
+rectangle 12306 {
+  User --> (Manage Tickets)
+  User --> (View Train State)
+  User --> (View Passenger State)
+  (Manage Tickets)<|--(Book Ticket)
+  (Manage Tickets)<|--(Reschedule Ticket)
+  (Manage Tickets)<|--(Cancel Ticket)
+  (View Train State)<|--(Display Train Location)
+  (View Train State)<|--(Display Seat Occupation)
+  (View Passenger State) <|-- (Checked In)
+  (View Passenger State) <|-- (Wait At Gate)
+  (View Passenger State) <|-- (Get On the Train)
+  (Select Departure and Destination).>  (Book Ticket):include
+  (Select Seat).>(Book Ticket):include
+  (Select Date).>(Book Ticket):include
+  (Select Departure and Destination).>  (Reschedule Ticket):include
+  (Select Seat).>(Reschedule Ticket):include
+  (Select Date).>(Reschedule Ticket):include
 }
-
 @enduml

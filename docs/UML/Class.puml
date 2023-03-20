@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class BookingSystem{
++displayPassengerState(): void
++displayTrainState(): void
+}
+
+class Train{
+ -string trainID
+ -location: String
+ -seatOccupation: String
+}
+
+class Passanger{
+-passangerId int
+-state: String
+-myTickets:List<Ticket> 
+
++bookTicket(): void
++rescheduleTicket(): void
++cancelTicket(): void
++selectSeat(): void
++selectData(): void
++selectDepartureDestination(): void
+}
+
+class Station{
++stationName:String
+}
+
+BookingSystem "1"*--"1..*" Train
+BookingSystem "1"*--"1..*" Passanger
+BookingSystem "1"*--"1..*" Station
+BookingSystem "1"*--"1..*" Ticket
+
+class Ticket{
++ticketTrain:Train
++ticketPrice:int
++isOcupied:bool
++grade:String
+-bookPassanger:Passanger
++Departure:String
++Destination:String
+}
+Ticket "1"*-- "1"Train
+Ticket "1"*-- "2"Station
+Ticket "1"*-- "1"Passanger
+
+@enduml
