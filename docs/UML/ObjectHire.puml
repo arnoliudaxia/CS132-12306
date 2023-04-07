@@ -4,20 +4,15 @@
 class TrainDispatch{
 datetime SysTime
 List<Station> Stations
-
+List<Train> Trains
 }
 
 class Train{
  string trainCode
+ trainStatus status
+ List<Station> remainingStations
 ' List<Passanger> passangers
- List<Station> toStations
 }
-
-'enum Passangertatus{
-'    IDLE
-'    BOOKED
-'    ONBOARD
-'}
 
 class Passanger{
 int passangerId
@@ -32,6 +27,8 @@ bool bookTicket(Ticket)
 
 class Station{
     string stationName
+    datetime arrivalTime
+    datetime departureTime
 }
 
 TrainDispatch *-- Train
@@ -47,10 +44,21 @@ class Ticket{
     Station fromStation
     Station toStation
 }
-Ticket *-- Train
+Station *.. Train
 Ticket *-- Station
 Ticket *.. Passanger
 
 TrainDispatch *-- Ticket
+
+enum trainStatus{
+    '等待发车
+    NOTSTARTED
+    'train is running
+    RUNNING
+    'train is stopped
+    STOPPED
+}
+
+Train *-- trainStatus
 
 @enduml

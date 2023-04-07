@@ -8,7 +8,7 @@ classdef TrainDispatch < handle
         SysTime %该变量用于模拟火车世界时间，格式为datetime
         SysTimeDisplay %该变量用于显示火车世界时间，格式为HH:MM
         SysTimeCron
-        activeTrains = []
+        Trains = []
         mainApp
         debugApp
         Stations = []
@@ -17,13 +17,12 @@ classdef TrainDispatch < handle
     % ========时间模拟系统==========
     methods (Access = public)
 
-        function obj = TrainDispatch(mainApphandle, debugAppHandle)
+        function obj = TrainDispatch()
             "建立火车调度中心"
-            obj.mainApp = mainApphandle;
-            obj.debugApp = debugAppHandle;
-            obj.SysTime = datetime('09:00:00');
-            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 10);
-            start(SysTimeCron);
+            "模拟时间系统启动"
+            obj.SysTime = datetime('09:50:00');
+            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 20);
+            % start(SysTimeCron);
             % init stations
             nanjingS = Station("南京南");
             changzhouN = Station("常州北");
@@ -34,6 +33,15 @@ classdef TrainDispatch < handle
             huzhou = Station("湖州");
             hangzhouE = Station("杭州东");
             Stations = [nanjingS,changzhouN,suzhouN,shanghaiHQ,jiaxingS,liyang,huzhou,hangzhouE];
+            % init trains
+            % D21
+            d21_hangzhou=hangzhouE;
+            d21_hangzhou.departureTime=datetime('10:03:00');
+            d21_huzhou=huzhou;
+            d21_huzhou.arrivalTime=datetime('11:30:00');
+            d21_huzhou.departureTime=datetime('10:05:00');
+            
+            D21 = Train("D21", [d21_hangzhou])
         end
 
         function update_sys_time(Obj, ~, ~)
@@ -43,6 +51,15 @@ classdef TrainDispatch < handle
             Obj.debugApp.display_update_systime(Obj.SysTimeDisplay);
 
         end
+
+        function changeSysTime(app,deltaTime)
+            "改变时间"
+            app.SysTime = app.SysTime + deltaTime;
+            app.SysTimeDisplay = datestr(app.SysTime, 'HH:MM'); % 转换为字符串格式
+            app.debugApp.display_update_systime(app.SysTimeDisplay);
+        end
+
+        
 
     end
 

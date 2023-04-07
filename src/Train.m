@@ -5,7 +5,8 @@ classdef Train<handle
     properties
         trainCode
         passangers
-        toStations
+        remainingStations
+        status
     end
     
     methods
@@ -17,7 +18,7 @@ classdef Train<handle
         % Long description
             obj.trainCode = code;
             obj.passangers = [];
-            obj.toStations = stations;
+            obj.remainingStations = stations;
         end
 
     end
