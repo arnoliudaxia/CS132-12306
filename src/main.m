@@ -1,11 +1,14 @@
 % Entrypoint for your project.
 
+trainDispath=TrainDispatch();
 % Initialize the UI
-ui= mainApp();
+mainapp= mainApp();
+trainDispath.mainApp=mainapp;
 debugUI= DebugApp();
+trainDispath.debugApp=debugUI;
+debugUI.trainDispatch=trainDispath;
 % init a basic env
-trainDispath=TrainDispatch(ui,debugUI);
-
+% debugUI.trainDispatch=trainDispath;
 % train1=Train("G112",trainDispath);
 % Xiaoming=Passanger(0,"XiaoMing");
 % ui.bindPassanger(Xiaoming);

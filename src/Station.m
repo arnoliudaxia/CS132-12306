@@ -5,13 +5,12 @@ classdef Station
     properties
         stationName
         arrivalTime
+        departureTime
     end
     
     methods
         function obj = Station(name)
-            obj.stationName=name
-            % obj.arrivalTime=datetime("now")
-            
+            obj.stationName=name;
         end
     end
 end
