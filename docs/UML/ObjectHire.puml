@@ -2,9 +2,9 @@
 'https://plantuml.com/class-diagram
 
 class TrainDispatch{
-List<Train> activeTrains
+datetime SysTime
+List<Station> Stations
 
-void DisplayTrains()
 }
 
 class Train{
@@ -32,7 +32,6 @@ bool bookTicket(Ticket)
 
 class Station{
     string stationName
-    datetime arrivalTime
 }
 
 TrainDispatch *-- Train

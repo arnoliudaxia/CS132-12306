@@ -4,7 +4,7 @@ classdef Station
     
     properties
         stationName
-        arrivalTime
+        % arrivalTime
     end
     
     methods

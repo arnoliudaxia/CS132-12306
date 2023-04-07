@@ -5,13 +5,13 @@ classdef TrainDispatch < handle
     % 实体类的设计按照函数式编程或者容器式设计
 
     properties
-        SysTime %该变量用于模拟火车世界时间，格式为从0900开始的以秒为单位的int型数值
+        SysTime %该变量用于模拟火车世界时间，格式为datetime
         SysTimeDisplay %该变量用于显示火车世界时间，格式为HH:MM
         SysTimeCron
         activeTrains = []
         mainApp
         debugApp
-        StationS = []
+        Stations = []
     end
 
     % ========时间模拟系统==========
@@ -33,7 +33,7 @@ classdef TrainDispatch < handle
             liyang = Station("溧阳");
             huzhou = Station("湖州");
             hangzhouE = Station("杭州东");
-            StationS = [nanjingS,changzhouN,suzhouN,shanghaiHQ,jiaxingS,liyang,huzhou,hangzhouE];
+            Stations = [nanjingS,changzhouN,suzhouN,shanghaiHQ,jiaxingS,liyang,huzhou,hangzhouE];
         end
 
         function update_sys_time(Obj, ~, ~)
