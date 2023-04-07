@@ -5,8 +5,9 @@
 % controller = counter();
 % ui.constructor(counter);
 ui= mainApp();
+debugUI= DebugApp();
 % init a basic env
-trainDispath=TrainDispatch(ui);
+trainDispath=TrainDispatch(ui,debugUI);
 % shanghai=Station("Shanghai");
 % hangzhou=Station("Hangzhou");
 % train1=Train("G112",trainDispath);

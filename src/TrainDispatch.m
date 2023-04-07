@@ -10,14 +10,16 @@ classdef TrainDispatch < handle
         SysTimeCron
         activeTrains = []
         mainApp
+        debugApp
     end
 
     % ========时间模拟系统==========
     methods (Access = public)
 
-        function obj = TrainDispatch(mainApphandle)
+        function obj = TrainDispatch(mainApphandle,debugAppHandle)
             "建立火车调度中心"
             obj.mainApp=mainApphandle;
+            obj.debugApp=debugAppHandle;
             obj.SysTime = datetime('09:00:00');
             SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time,'TasksToExecute', 10);
             start(SysTimeCron);
@@ -27,7 +29,7 @@ classdef TrainDispatch < handle
             % "更新时间"
             Obj.SysTime=Obj.SysTime+minutes(1);
             Obj.SysTimeDisplay=datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
-            Obj.mainApp.display_update_systime(Obj.SysTimeDisplay);
+            Obj.debugApp.display_update_systime(Obj.SysTimeDisplay);
 
         end
 
