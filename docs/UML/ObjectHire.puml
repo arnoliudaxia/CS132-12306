@@ -9,15 +9,15 @@ void DisplayTrains()
 
 class Train{
  string trainCode
- List<Passanger> passangers
+' List<Passanger> passangers
  List<Station> toStations
 }
 
-enum Passangertatus{
-    IDLE
-    BOOKED
-    ONBOARD
-}
+'enum Passangertatus{
+'    IDLE
+'    BOOKED
+'    ONBOARD
+'}
 
 class Passanger{
 int passangerId
