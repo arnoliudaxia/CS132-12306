@@ -9,15 +9,17 @@ classdef TrainDispatch < handle
         SysTimeDisplay %该变量用于显示火车世界时间，格式为HH:MM
         SysTimeCron
         activeTrains = []
+        mainApp
     end
 
     % ========时间模拟系统==========
-    methods
+    methods (Access = public)
 
-        function obj = TrainDispatch()
+        function obj = TrainDispatch(mainApphandle)
             "建立火车调度中心"
+            obj.mainApp=mainApphandle;
             obj.SysTime = datetime('09:00:00');
-            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time,'TasksToExecute', 5);
+            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time,'TasksToExecute', 10);
             start(SysTimeCron);
         end
 
@@ -25,6 +27,7 @@ classdef TrainDispatch < handle
             % "更新时间"
             Obj.SysTime=Obj.SysTime+minutes(1);
             Obj.SysTimeDisplay=datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
+            Obj.mainApp.display_update_systime(Obj.SysTimeDisplay);
 
         end
 

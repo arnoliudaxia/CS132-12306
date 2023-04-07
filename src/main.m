@@ -6,7 +6,7 @@
 % ui.constructor(counter);
 ui= mainApp();
 % init a basic env
-trainDispath=TrainDispatch();
+trainDispath=TrainDispatch(ui);
 % shanghai=Station("Shanghai");
 % hangzhou=Station("Hangzhou");
 % train1=Train("G112",trainDispath);
