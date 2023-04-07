@@ -9,13 +9,8 @@ classdef Station
     
     methods
         function obj = Station(name)
-        %Station - Description
-        %
-        % Syntax: obj = Station(input)
-        %
-        % Long description
             obj.stationName=name
-            obj.arrivalTime=datetime("now")
+            % obj.arrivalTime=datetime("now")
             
         end
     end

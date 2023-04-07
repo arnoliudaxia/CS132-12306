@@ -1,15 +1,11 @@
 % Entrypoint for your project.
 
-% Initialize the UI and the controller.
-% ui = view();
-% controller = counter();
-% ui.constructor(counter);
+% Initialize the UI
 ui= mainApp();
 debugUI= DebugApp();
 % init a basic env
 trainDispath=TrainDispatch(ui,debugUI);
-% shanghai=Station("Shanghai");
-% hangzhou=Station("Hangzhou");
+
 % train1=Train("G112",trainDispath);
 % Xiaoming=Passanger(0,"XiaoMing");
 % ui.bindPassanger(Xiaoming);

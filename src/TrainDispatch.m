@@ -11,24 +11,35 @@ classdef TrainDispatch < handle
         activeTrains = []
         mainApp
         debugApp
+        StationS = []
     end
 
     % ========时间模拟系统==========
     methods (Access = public)
 
-        function obj = TrainDispatch(mainApphandle,debugAppHandle)
+        function obj = TrainDispatch(mainApphandle, debugAppHandle)
             "建立火车调度中心"
-            obj.mainApp=mainApphandle;
-            obj.debugApp=debugAppHandle;
+            obj.mainApp = mainApphandle;
+            obj.debugApp = debugAppHandle;
             obj.SysTime = datetime('09:00:00');
-            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time,'TasksToExecute', 10);
+            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 10);
             start(SysTimeCron);
+            % init stations
+            nanjingS = Station("南京南");
+            changzhouN = Station("常州北");
+            suzhouN = Station("苏州北");
+            shanghaiHQ = Station("上海虹桥");
+            jiaxingS = Station("嘉兴南");
+            liyang = Station("溧阳");
+            huzhou = Station("湖州");
+            hangzhouE = Station("杭州东");
+            StationS = [nanjingS,changzhouN,suzhouN,shanghaiHQ,jiaxingS,liyang,huzhou,hangzhouE];
         end
 
-        function update_sys_time(Obj,~, ~)
+        function update_sys_time(Obj, ~, ~)
             % "更新时间"
-            Obj.SysTime=Obj.SysTime+minutes(1);
-            Obj.SysTimeDisplay=datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
+            Obj.SysTime = Obj.SysTime + minutes(1);
+            Obj.SysTimeDisplay = datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
             Obj.debugApp.display_update_systime(Obj.SysTimeDisplay);
 
         end
