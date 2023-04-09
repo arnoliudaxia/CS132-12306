@@ -7,6 +7,7 @@ trainDispath.mainApp=mainapp;
 debugUI= DebugApp();
 trainDispath.debugApp=debugUI;
 debugUI.trainDispatch=trainDispath;
+debugUI.display_update_systime();
 % init a basic env
 % debugUI.trainDispatch=trainDispath;
 % train1=Train("G112",trainDispath);
@@ -16,5 +17,3 @@ debugUI.trainDispatch=trainDispath;
 % testTicket=Ticket(train1,shanghai,hangzhou);
 % Xiaoming.bookTicket(testTicket);
 % ui.DisplayTrains()
-
-% * YOUR CODE HERE *

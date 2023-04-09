@@ -15,12 +15,16 @@ classdef TrainDispatch < handle
     end
 
     % ========时间模拟系统==========
+    methods (Access=private)
+    end
     methods (Access = public)
 
         function obj = TrainDispatch()
             "建立火车调度中心"
             "模拟时间系统启动"
             obj.SysTime = datetime('09:50:00');
+            obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
+
             SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 20);
             % start(SysTimeCron);
             % init stations
@@ -56,7 +60,7 @@ classdef TrainDispatch < handle
             "改变时间"
             app.SysTime = app.SysTime + deltaTime;
             app.SysTimeDisplay = datestr(app.SysTime, 'HH:MM'); % 转换为字符串格式
-            app.debugApp.display_update_systime(app.SysTimeDisplay);
+            app.debugApp.display_update_systime();
         end
 
         
