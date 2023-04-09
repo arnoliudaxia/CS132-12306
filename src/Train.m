@@ -5,8 +5,8 @@ classdef Train<handle
     properties
         trainCode
         passangers
-        remainingStations
-        status
+        remainingStations = []
+        status %'NOTSTARTED','RUNNING','STOP'
     end
     
     methods
@@ -19,6 +19,7 @@ classdef Train<handle
             obj.trainCode = code;
             obj.passangers = [];
             obj.remainingStations = stations;
+            obj.status = 'NOTSTARTED';
         end
 
     end

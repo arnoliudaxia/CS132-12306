@@ -15,8 +15,9 @@ classdef TrainDispatch < handle
     end
 
     % ========时间模拟系统==========
-    methods (Access=private)
+    methods (Access = private)
     end
+
     methods (Access = public)
 
         function obj = TrainDispatch()
@@ -36,16 +37,33 @@ classdef TrainDispatch < handle
             liyang = Station("溧阳");
             huzhou = Station("湖州");
             hangzhouE = Station("杭州东");
-            Stations = [nanjingS,changzhouN,suzhouN,shanghaiHQ,jiaxingS,liyang,huzhou,hangzhouE];
+            Stations = [nanjingS, changzhouN, suzhouN, shanghaiHQ, jiaxingS, liyang, huzhou, hangzhouE];
             % init trains
-            % D21
-            d21_hangzhou=hangzhouE;
-            d21_hangzhou.departureTime=datetime('10:03:00');
-            d21_huzhou=huzhou;
-            d21_huzhou.arrivalTime=datetime('11:30:00');
-            d21_huzhou.departureTime=datetime('10:05:00');
+            %region D21
+            d21_hangzhou = hangzhouE;
+            d21_hangzhou.departureTime = datetime('10:03:00');
+            d21_huzhou = huzhou;
+            d21_huzhou.arrivalTime = datetime('11:30:00');
+            d21_huzhou.departureTime = datetime('10:05:00');
+            d21_liyang = liyang;
+            d21_liyang.arrivalTime = datetime('12:00:00');
+            d21_liyang.departureTime = datetime('12:03:00');
+            d21_nanjingS = nanjingS;
+            d21_nanjingS.arrivalTime = datetime('12:30:00');
+            %endregion
+            D21 = Train("D21", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS]);
+            obj.Trains = [D21];
             
-            D21 = Train("D21", [d21_hangzhou])
+
+        end
+
+        function output = myFun(input)
+        %myFun - Description
+        %
+        % Syntax: output = myFun(input)
+        %
+        % Long description
+            
         end
 
         function update_sys_time(Obj, ~, ~)
@@ -56,14 +74,12 @@ classdef TrainDispatch < handle
 
         end
 
-        function changeSysTime(app,deltaTime)
+        function changeSysTime(app, deltaTime)
             "改变时间"
             app.SysTime = app.SysTime + deltaTime;
             app.SysTimeDisplay = datestr(app.SysTime, 'HH:MM'); % 转换为字符串格式
             app.debugApp.display_update_systime();
         end
-
-        
 
     end
 
