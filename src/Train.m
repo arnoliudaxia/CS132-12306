@@ -55,9 +55,6 @@ classdef Train < handle
 
 
             elseif strcmp(app.status, 'STOP')
-                % if timeNow == app.remainingStations(1).arrivalTime
-                %     app.status = 'RUNNING';
-                % end
             end
 
         end

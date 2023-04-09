@@ -66,19 +66,35 @@ classdef TrainDispatch < handle
             d23_nanjingS.arrivalTime = datetime('13:00:00');
             %endregion
             D23 = Train("D23", [d23_hangzhou, d23_huzhou, d23_liyang, d23_nanjingS]);
-            D23.lineDirection=1;
-            obj.Trains = [D23];
-            
+            D23.lineDirection = 1;
+
+            %region D24
+            d24_nanjingS = nanjingS;
+            d24_nanjingS.departureTime = datetime('11:33:00');
+            d24_liyang = liyang;
+            d24_liyang.arrivalTime = datetime('12:00:00');
+            d24_liyang.departureTime = datetime('12:03:00');
+            d24_huzhou = huzhou;
+            d24_huzhou.arrivalTime = datetime('12:30:00');
+            d24_huzhou.departureTime = datetime('12:33:00');
+            d24_hangzhou = hangzhouE;
+            d24_hangzhou.arrivalTime = datetime('13:00:00');
+            %endregion
+            D24 = Train("D24", [d24_nanjingS, d24_liyang, d24_huzhou, d24_hangzhou]);
+            D24.lineDirection = 0;
+
+            obj.Trains = [D23,D24];
+            % obj.Trains = [D24];
 
         end
 
         function output = myFun(input)
-        %myFun - Description
-        %
-        % Syntax: output = myFun(input)
-        %
-        % Long description
-            
+            %myFun - Description
+            %
+            % Syntax: output = myFun(input)
+            %
+            % Long description
+
         end
 
         function update_sys_time(Obj, ~, ~)
@@ -96,9 +112,11 @@ classdef TrainDispatch < handle
             "显示时间";
             app.debugApp.display_update_systime();
             "更新所有列车状态"
+
             for index = 1:length(app.Trains)
                 app.Trains(index).updateTrainStatus(app.SysTime);
             end
+
             app.debugApp.updateTrainUI();
 
         end
