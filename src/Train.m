@@ -17,7 +17,7 @@ classdef Train<handle
             obj.status = 'NOTSTARTED';
         end
 
-        function updateTrainStatus(timeNow)
+        function updateTrainStatus(app,timeNow)
             if app.status == 'NOTSTARTED'
                 if timeNow >= app.remainingStations(1).departureTime
                     app.trainCode+"发车!!!!"
