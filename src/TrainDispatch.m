@@ -43,7 +43,7 @@ classdef TrainDispatch < handle
             d21_hangzhou = hangzhouE;
             d21_hangzhou.departureTime = datetime('10:03:00');
             d21_huzhou = huzhou;
-            d21_huzhou.arrivalTime = datetime('11:30:00');
+            d21_huzhou.arrivalTime = datetime('10:33:00');
             d21_huzhou.departureTime = datetime('10:05:00');
             d21_liyang = liyang;
             d21_liyang.arrivalTime = datetime('12:00:00');
@@ -52,7 +52,21 @@ classdef TrainDispatch < handle
             d21_nanjingS.arrivalTime = datetime('12:30:00');
             %endregion
             D21 = Train("D21", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS]);
-            obj.Trains = [D21];
+
+            %region D23
+            d23_hangzhou = hangzhouE;
+            d23_hangzhou.departureTime = datetime('11:33:00');
+            d23_huzhou = huzhou;
+            d23_huzhou.arrivalTime = datetime('12:00:00');
+            d23_huzhou.departureTime = datetime('12:03:00');
+            d23_liyang = liyang;
+            d23_liyang.arrivalTime = datetime('12:30:00');
+            d23_liyang.departureTime = datetime('12:33:00');
+            d23_nanjingS = nanjingS;
+            d23_nanjingS.arrivalTime = datetime('13:00:00');
+            %endregion
+            D23 = Train("D23", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS]);
+            obj.Trains = [D23];
             
 
         end
@@ -78,7 +92,10 @@ classdef TrainDispatch < handle
             "改变时间"
             app.SysTime = app.SysTime + deltaTime;
             app.SysTimeDisplay = datestr(app.SysTime, 'HH:MM'); % 转换为字符串格式
+            "显示时间";
             app.debugApp.display_update_systime();
+            "更新所有列车状态"
+
         end
 
     end
