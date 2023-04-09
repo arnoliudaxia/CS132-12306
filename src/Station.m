@@ -5,18 +5,12 @@ classdef Station
     properties
         stationName
         arrivalTime
+        departureTime
     end
     
     methods
         function obj = Station(name)
-        %Station - Description
-        %
-        % Syntax: obj = Station(input)
-        %
-        % Long description
-            obj.stationName=name
-            obj.arrivalTime=datetime("now")
-            
+            obj.stationName=name;
         end
     end
 end
