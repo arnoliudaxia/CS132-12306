@@ -23,10 +23,10 @@ classdef TrainDispatch < handle
         function obj = TrainDispatch()
             "建立火车调度中心"
             "模拟时间系统启动"
-            obj.SysTime = datetime('11:30:00');
+            obj.SysTime = datetime('10:00:00');
             obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
 
-            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 20);
+            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 2, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 4);
             % start(SysTimeCron);
             % init stations
             nanjingS = Station("南京南");
@@ -43,15 +43,16 @@ classdef TrainDispatch < handle
             d21_hangzhou = hangzhouE;
             d21_hangzhou.departureTime = datetime('10:03:00');
             d21_huzhou = huzhou;
-            d21_huzhou.arrivalTime = datetime('10:33:00');
-            d21_huzhou.departureTime = datetime('10:05:00');
+            d21_huzhou.arrivalTime = datetime('10:30:00');
+            d21_huzhou.departureTime = datetime('10:33:00');
             d21_liyang = liyang;
-            d21_liyang.arrivalTime = datetime('12:00:00');
-            d21_liyang.departureTime = datetime('12:03:00');
+            d21_liyang.arrivalTime = datetime('11:00:00');
+            d21_liyang.departureTime = datetime('11:03:00');
             d21_nanjingS = nanjingS;
             d21_nanjingS.arrivalTime = datetime('12:30:00');
             %endregion
             D21 = Train("D21", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS]);
+            D21.lineDirection = 1;
 
             %region D23
             d23_hangzhou = hangzhouE;
@@ -83,25 +84,16 @@ classdef TrainDispatch < handle
             D24 = Train("D24", [d24_nanjingS, d24_liyang, d24_huzhou, d24_hangzhou]);
             D24.lineDirection = 0;
 
-            obj.Trains = [D23,D24];
-            % obj.Trains = [D24];
-
-        end
-
-        function output = myFun(input)
-            %myFun - Description
-            %
-            % Syntax: output = myFun(input)
-            %
-            % Long description
+            obj.Trains = [D21,D23,D24];
 
         end
 
         function update_sys_time(Obj, ~, ~)
             % "更新时间"
-            Obj.SysTime = Obj.SysTime + minutes(1);
-            Obj.SysTimeDisplay = datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
-            Obj.debugApp.display_update_systime(Obj.SysTimeDisplay);
+            % Obj.SysTime = Obj.SysTime + minutes(1);
+            % Obj.SysTimeDisplay = datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
+            % Obj.debugApp.display_update_systime(Obj.SysTimeDisplay);
+            Obj.changeSysTime(minutes(5));
 
         end
 
