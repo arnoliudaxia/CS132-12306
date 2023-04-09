@@ -95,6 +95,10 @@ classdef TrainDispatch < handle
             "显示时间";
             app.debugApp.display_update_systime();
             "更新所有列车状态"
+            for index = 1:length(app.Trains)
+                app.Trains(index).updateTrainStatus(app.SysTime);
+            end
+            app.debugApp.updateTrainUI();
 
         end
 
