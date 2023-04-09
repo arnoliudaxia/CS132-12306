@@ -23,7 +23,7 @@ classdef TrainDispatch < handle
         function obj = TrainDispatch()
             "建立火车调度中心"
             "模拟时间系统启动"
-            obj.SysTime = datetime('09:50:00');
+            obj.SysTime = datetime('11:30:00');
             obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
 
             SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 1, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 20);
@@ -65,7 +65,8 @@ classdef TrainDispatch < handle
             d23_nanjingS = nanjingS;
             d23_nanjingS.arrivalTime = datetime('13:00:00');
             %endregion
-            D23 = Train("D23", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS]);
+            D23 = Train("D23", [d23_hangzhou, d23_huzhou, d23_liyang, d23_nanjingS]);
+            D23.lineDirection=1;
             obj.Trains = [D23];
             
 

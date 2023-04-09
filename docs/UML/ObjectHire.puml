@@ -11,6 +11,8 @@ class Train{
  string trainCode
  trainStatus status
  List<Station> remainingStations
+ int lineType
+ bool lineDirection
 ' List<Passanger> passangers
 }
 
