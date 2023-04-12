@@ -187,7 +187,7 @@ classdef TrainDispatch < handle
             G26.lineDirection = 0;
 % endregion 短线列车
 
-            obj.Trains = [D21, D23, D24, D22, D25, D26, G21, G23, G25, G22, G24, G26];
+            obj.Trains = [D21, D23, D25,D22,D24, D26, G21, G23, G25, G22, G24, G26];
 
         end
 
@@ -233,8 +233,58 @@ classdef TrainDispatch < handle
 
         end
 
+        function output = filterActiveTrains(app,funcOut)
+            output=[]
+            for i = 1:length(app.Trains)
+                train = app.Trains(i);
+
+                if funcOut(train)
+                    output=[output,train];
+                end
+
+            end
+        end
+
         % endregion
 
+        function output = findAvailableTickets(app,fromStation,toStation,trainSeq)
+            % 注意这里的fromStation必须包含arrivalTime，toStation必须包含arrivalTime，代表了客户到站的时间
+            % 问每一辆车车会不会经过呢
+            passedTrains=app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
+            % 当然是选择一个最早的动车或者高铁（我干嘛要故意错过呢？）
+            shouldTake=app.GetEariestTrain(passedTrains);
+
+            for i = 1:length(shouldTake)
+                disp(shouldTake(i).trainCode);
+            end
+            
+            
+            
+        end
+
+        function output = GetEariestTrain(app,trainList)
+            % 返回一个最早的动车或者高铁
+            % 因为是顺序查找，所以第一个D和G就是最早的，选他们就对
+            isFoundD=false;
+            isFoundG=false;
+            output=[];
+            for i = 1:length(trainList)
+                train=trainList(i);
+                if ~isFoundD&&train.DorG==1
+                    isFoundD=true;
+                    output=[output,train];
+                end
+                if ~isFoundG&&train.DorG==2
+                    isFoundG=true;
+                    output=[output,train];
+                end
+                if isFoundD&&isFoundG
+                    break
+                end
+                
+            end
+            
+        end
     end
 
 end
