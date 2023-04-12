@@ -4,6 +4,7 @@ trainDispath=TrainDispatch();
 % Initialize the UI
 mainapp= mainApp();
 trainDispath.mainApp=mainapp;
+mainapp.trainDispatch=trainDispath;
 debugUI= DebugApp();
 trainDispath.debugApp=debugUI;
 debugUI.trainDispatch=trainDispath;
