@@ -99,23 +99,37 @@ classdef TrainDispatch < handle
             D22 = Train("D22", [d22_nanjingS, d22_liyang, d22_huzhou, d22_hangzhou]);
             D22.lineDirection = 0;
 
-            %region D23
-            d23_hangzhou = hangzhouE;
-            d23_hangzhou.departureTime = datetime('11:33:00');
-            d23_huzhou = huzhou;
-            d23_huzhou.arrivalTime = datetime('12:00:00');
-            d23_huzhou.departureTime = datetime('12:03:00');
-            d23_liyang = liyang;
-            d23_liyang.arrivalTime = datetime('12:30:00');
-            d23_liyang.departureTime = datetime('12:33:00');
-            d23_nanjingS = nanjingS;
-            d23_nanjingS.arrivalTime = datetime('13:00:00');
+            %region D25
+            d25_hangzhou = hangzhouE;
+            d25_hangzhou.departureTime = datetime('13:03:00');
+            d25_huzhou = huzhou;
+            d25_huzhou.arrivalTime = datetime('13:30:00');
+            d25_huzhou.departureTime = datetime('13:33:00');
+            d25_liyang = liyang;
+            d25_liyang.arrivalTime = datetime('14:00:00');
+            d25_liyang.departureTime = datetime('14:03:00');
+            d25_nanjingS = nanjingS;
+            d25_nanjingS.arrivalTime = datetime('14:30:00');
             %endregion
-            D23 = Train("D23", [d23_hangzhou, d23_huzhou, d23_liyang, d23_nanjingS]);
-            D23.lineDirection = 1;
+            D25 = Train("D25", [d25_hangzhou, d25_huzhou, d25_liyang, d25_nanjingS]);
+            D25.lineDirection = 1;
 
-            obj.Trains = [D21, D23, D24, D22];
-            
+            %region D26
+            d26_nanjingS = nanjingS;
+            d26_nanjingS.departureTime = datetime('13:03:00');
+            d26_liyang = liyang;
+            d26_liyang.arrivalTime = datetime('13:30:00');
+            d26_liyang.departureTime = datetime('13:33:00');
+            d26_huzhou = huzhou;
+            d26_huzhou.arrivalTime = datetime('14:00:00');
+            d26_huzhou.departureTime = datetime('14:03:00');
+            d26_hangzhou = hangzhouE;
+            d26_hangzhou.arrivalTime = datetime('14:30:00');
+            %endregion
+            D26 = Train("D26", [d26_nanjingS, d26_liyang, d26_huzhou, d26_hangzhou]);
+            D26.lineDirection = 0;
+
+            obj.Trains = [D21, D23, D24, D22, D25, D26];
 
         end
 
@@ -142,20 +156,28 @@ classdef TrainDispatch < handle
         end
 
         % region "列车遍历回调"
-        function ForEachTrain(app,funcOut)
+        function ForEachTrain(app, funcOut)
+
             for i = 1:length(app.Trains)
-                train=app.Trains(i);
+                train = app.Trains(i);
                 funcOut(train);
             end
+
         end
-        function ForEachActiveTrain(app,funcOut)
+
+        function ForEachActiveTrain(app, funcOut)
+
             for i = 1:length(app.Trains)
-                train=app.Trains(i);
-                if strcmp(train.status,"RUNNING")
+                train = app.Trains(i);
+
+                if strcmp(train.status, "RUNNING")
                     funcOut(train);
                 end
+
             end
+
         end
+
         % endregion
 
     end

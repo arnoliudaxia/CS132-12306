@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+|TrainDispatch|
+start
+group init
+    :Time System Online;
+    :init stations;
+    :init trains;
+end group
+|MainApp|
+:mainApp();
+|DebugApp|
+:DebugApp();
+
+stop
+
+@enduml
