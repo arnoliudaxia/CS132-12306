@@ -248,14 +248,21 @@ classdef TrainDispatch < handle
         % endregion
 
         function output = findAvailableTickets(app,fromStation,toStation,trainSeq)
+            "查询从 "+fromStation.stationName+" 到 "+toStation.stationName
             % 注意这里的fromStation必须包含arrivalTime，toStation必须包含arrivalTime，代表了客户到站的时间
             % 问每一辆车车会不会经过呢
             passedTrains=app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
             % 当然是选择一个最早的动车或者高铁（我干嘛要故意错过呢？）
             shouldTake=app.GetEariestTrain(passedTrains);
+            leftPossibilities=[];
 
             for i = 1:length(shouldTake)
-                disp(shouldTake(i).trainCode);
+                train=shouldTake(i);
+                if train.findPasswayStationWithoutTime(toStation)
+                    "太棒了"+train.trainCode+"能乘到";
+                    output=[trainSeq,train];
+
+                end
             end
             
             

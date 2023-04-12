@@ -87,6 +87,20 @@ classdef Train < handle
 
         end
 
+        function output = findPasswayStationWithoutTime(app, queryStation)
+            % 只看会不会经过，其他一概不考虑
+            output = 0;
+            for i = 1:length(app.remainingStations)
+                station = app.remainingStations(i);
+
+                if strcmp(station.stationName, queryStation.stationName)
+                    output = 1;
+                end
+
+            end
+            
+        end
+
     end
 
 end
