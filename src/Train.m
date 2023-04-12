@@ -22,10 +22,10 @@ classdef Train < handle
             obj.lineType = lineT;
             %如果code以“D”开头，那么是动车，否则是高铁
             if  ~isempty(extract(obj.trainCode,"D"))
-                "动车"
+                % "动车"
                 obj.DorG = 1;
             else
-                "高铁"
+                % "高铁"
                 obj.DorG = 2;
             end
 
