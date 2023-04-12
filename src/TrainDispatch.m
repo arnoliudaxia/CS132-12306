@@ -113,6 +113,23 @@ classdef TrainDispatch < handle
 
         end
 
+        % region "列车遍历回调"
+        function ForEachTrain(app,funcOut)
+            for i = 1:length(app.Trains)
+                train=app.Trains(i);
+                funcOut(train);
+            end
+        end
+        function ForEachActiveTrain(app,funcOut)
+            for i = 1:length(app.Trains)
+                train=app.Trains(i);
+                if strcmp(train.status,"RUNNING")
+                    funcOut(train);
+                end
+            end
+        end
+        % endregion
+
     end
 
 end
