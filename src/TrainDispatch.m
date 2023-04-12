@@ -39,7 +39,7 @@ classdef TrainDispatch < handle
             hangzhouE = Station("杭州东");
             Stations = [nanjingS, changzhouN, suzhouN, shanghaiHQ, jiaxingS, liyang, huzhou, hangzhouE];
             % init trains
-            %region D21
+            %#region D21
             d21_hangzhou = hangzhouE;
             d21_hangzhou.departureTime = datetime('10:03:00');
             d21_huzhou = huzhou;
@@ -50,7 +50,7 @@ classdef TrainDispatch < handle
             d21_liyang.departureTime = datetime('11:03:00');
             d21_nanjingS = nanjingS;
             d21_nanjingS.arrivalTime = datetime('12:30:00');
-            %endregion
+            %#endregion
             D21 = Train("D21", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS]);
             D21.lineDirection = 1;
 
@@ -84,15 +84,43 @@ classdef TrainDispatch < handle
             D24 = Train("D24", [d24_nanjingS, d24_liyang, d24_huzhou, d24_hangzhou]);
             D24.lineDirection = 0;
 
-            obj.Trains = [D21,D23,D24];
+            %region D22
+            d22_nanjingS = nanjingS;
+            d22_nanjingS.departureTime = datetime('10:03:00');
+            d22_liyang = liyang;
+            d22_liyang.arrivalTime = datetime('10:30:00');
+            d22_liyang.departureTime = datetime('10:33:00');
+            d22_huzhou = huzhou;
+            d22_huzhou.arrivalTime = datetime('11:00:00');
+            d22_huzhou.departureTime = datetime('11:03:00');
+            d22_hangzhou = hangzhouE;
+            d22_hangzhou.arrivalTime = datetime('12:30:00');
+            %endregion
+            D22 = Train("D22", [d22_nanjingS, d22_liyang, d22_huzhou, d22_hangzhou]);
+            D22.lineDirection = 0;
+
+            %region D23
+            d23_hangzhou = hangzhouE;
+            d23_hangzhou.departureTime = datetime('11:33:00');
+            d23_huzhou = huzhou;
+            d23_huzhou.arrivalTime = datetime('12:00:00');
+            d23_huzhou.departureTime = datetime('12:03:00');
+            d23_liyang = liyang;
+            d23_liyang.arrivalTime = datetime('12:30:00');
+            d23_liyang.departureTime = datetime('12:33:00');
+            d23_nanjingS = nanjingS;
+            d23_nanjingS.arrivalTime = datetime('13:00:00');
+            %endregion
+            D23 = Train("D23", [d23_hangzhou, d23_huzhou, d23_liyang, d23_nanjingS]);
+            D23.lineDirection = 1;
+
+            obj.Trains = [D21, D23, D24, D22];
+            
 
         end
 
         function update_sys_time(Obj, ~, ~)
             % "更新时间"
-            % Obj.SysTime = Obj.SysTime + minutes(1);
-            % Obj.SysTimeDisplay = datestr(Obj.SysTime, 'HH:MM'); % 转换为字符串格式
-            % Obj.debugApp.display_update_systime(Obj.SysTimeDisplay);
             Obj.changeSysTime(minutes(5));
 
         end
