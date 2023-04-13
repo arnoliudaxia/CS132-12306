@@ -185,9 +185,161 @@ classdef TrainDispatch < handle
             % endregion
             G26 = Train("G26", [G26_nanjingS, G26_hangzhou], 1);
             G26.lineDirection = 0;
-% endregion 短线列车
+            % endregion 短线列车
 
-            obj.Trains = [D21, D23, D25,D22,D24, D26, G21, G23, G25, G22, G24, G26];
+            % region D11
+            D11_suzhouN = suzhouN;
+            D11_suzhouN.departureTime = datetime('10:03:00');
+            D11_changzhouN = changzhouN;
+            D11_changzhouN.arrivalTime = datetime('10:30:00');
+            D11_changzhouN.departureTime = datetime('10:33:00');
+            D11_nanjingS = nanjingS;
+            D11_nanjingS.arrivalTime = datetime('11:00:00');
+            D11 = Train("D11", [D11_suzhouN, D11_changzhouN, D11_nanjingS], 2);
+            D11.lineDirection = 0;
+            % endregion
+
+            % region D13
+            D13_hangzhouE = hangzhouE;
+            D13_hangzhouE.departureTime = datetime('10:03:00');
+            D13_jiaxingS = jiaxingS;
+            D13_jiaxingS.arrivalTime = datetime('10:30:00');
+            D13_jiaxingS.departureTime = datetime('10:33:00');
+            D13_shanghaiHQ = shanghaiHQ;
+            D13_shanghaiHQ.arrivalTime = datetime('11:00:00');
+            D13_shanghaiHQ.departureTime = datetime('11:03:00');
+            D13_suzhouN = suzhouN;
+            D13_suzhouN.arrivalTime = datetime('11:30:00');
+            D13_suzhouN.departureTime = datetime('11:33:00');
+            D13_changzhouN = changzhouN;
+            D13_changzhouN.arrivalTime = datetime('12:00:00');
+            D13_changzhouN.departureTime = datetime('12:03:00');
+            D13_nanjingS = nanjingS;
+            D13_nanjingS.arrivalTime = datetime('13:30:00');
+            D13 = Train("D13", [D13_hangzhouE, D13_jiaxingS, D13_shanghaiHQ, D13_suzhouN, D13_changzhouN, D13_nanjingS], 2);
+            D13.lineDirection = 0;
+            % endregion
+
+            % region D15
+            D15_hangzhouE = hangzhouE;
+            D15_hangzhouE.departureTime = datetime('11:33:00');
+            D15_jiaxingS = jiaxingS;
+            D15_jiaxingS.arrivalTime = datetime('12:00:00');
+            D15_jiaxingS.departureTime = datetime('12:03:00');
+            D15_shanghaiHQ = shanghaiHQ;
+            D15_shanghaiHQ.arrivalTime = datetime('12:30:00');
+            D15_shanghaiHQ.departureTime = datetime('12:33:00');
+            D15_suzhouN = suzhouN;
+            D15_suzhouN.arrivalTime = datetime('13:00:00');
+            D15_suzhouN.departureTime = datetime('13:03:00');
+            D15_changzhouN = changzhouN;
+            D15_changzhouN.arrivalTime = datetime('13:30:00');
+            D15_changzhouN.departureTime = datetime('13:33:00');
+            D15_nanjingS = nanjingS;
+            D15_nanjingS.arrivalTime = datetime('14:00:00');
+            D15 = Train("D15", [D15_hangzhouE, D15_jiaxingS, D15_shanghaiHQ, D15_suzhouN, D15_changzhouN, D15_nanjingS], 2);
+            D15.lineDirection = 0;
+            % endregion
+
+            % region D17
+            D17_hangzhouE = hangzhouE;
+            D17_hangzhouE.departureTime = datetime('13:03:00');
+            D17_jiaxingS = jiaxingS;
+            D17_jiaxingS.arrivalTime = datetime('13:30:00');
+            D17_jiaxingS.departureTime = datetime('13:33:00');
+            D17_shanghaiHQ = shanghaiHQ;
+            D17_shanghaiHQ.arrivalTime = datetime('14:00:00');
+            D17_shanghaiHQ.departureTime = datetime('14:03:00');
+            D17_suzhouN = suzhouN;
+            D17_suzhouN.arrivalTime = datetime('14:30:00');
+            D17_suzhouN.departureTime = datetime('14:33:00');
+            D17_changzhouN = changzhouN;
+            D17_changzhouN.arrivalTime = datetime('15:00:00');
+            D17_changzhouN.departureTime = datetime('15:03:00');
+            D17_nanjingS = nanjingS;
+            D17_nanjingS.arrivalTime = datetime('15:30:00');
+            D17 = Train("D17", [D17_hangzhouE, D17_jiaxingS, D17_shanghaiHQ, D17_suzhouN, D17_changzhouN, D17_nanjingS], 2);
+            D17.lineDirection = 0;
+            % endregion
+
+            % region D12
+            D12_shanghaiHQ = shanghaiHQ;
+            D12_shanghaiHQ.departureTime = datetime('10:03:00');
+            D12_jiaxingS = jiaxingS;
+            D12_jiaxingS.arrivalTime = datetime('10:30:00');
+            D12_jiaxingS.departureTime = datetime('10:33:00');
+            D12_hangzhouE = hangzhouE;
+            D12_hangzhouE.arrivalTime = datetime('11:00:00');
+            D12 = Train("D12", [D12_shanghaiHQ, D12_jiaxingS, D12_hangzhouE], 2);
+            D12.lineDirection = 1;
+            % endregion
+
+            % region D14
+            D14_nanjingS = nanjingS;
+            D14_nanjingS.departureTime = datetime('10:03:00');
+            D14_changzhouN = changzhouN;
+            D14_changzhouN.arrivalTime = datetime('10:30:00');
+            D14_changzhouN.departureTime = datetime('10:33:00');
+            D14_suzhouN = suzhouN;
+            D14_suzhouN.arrivalTime = datetime('11:00:00');
+            D14_suzhouN.departureTime = datetime('11:03:00');
+            D14_shanghaiHQ = shanghaiHQ;
+            D14_shanghaiHQ.arrivalTime = datetime('11:30:00');
+            D14_shanghaiHQ.departureTime = datetime('11:33:00');
+            D14_jiaxingS = jiaxingS;
+            D14_jiaxingS.arrivalTime = datetime('12:00:00');
+            D14_jiaxingS.departureTime = datetime('12:03:00');
+            D14_hangzhouE = hangzhouE;
+            D14_hangzhouE.arrivalTime = datetime('13:30:00');
+            D14 = Train("D14", [D14_nanjingS, D14_changzhouN, D14_suzhouN, D14_shanghaiHQ, D14_jiaxingS, D14_hangzhouE], 2);
+            D14.lineDirection = 1;
+            % endregion
+
+            % region D16
+            D16_nanjingS = nanjingS;
+            D16_nanjingS.departureTime = datetime('11:33:00');
+            D16_changzhouN = changzhouN;
+            D16_changzhouN.arrivalTime = datetime('12:00:00');
+            D16_changzhouN.departureTime = datetime('12:03:00');
+            D16_suzhouN = suzhouN;
+            D16_suzhouN.arrivalTime = datetime('12:30:00');
+            D16_suzhouN.departureTime = datetime('12:33:00');
+            D16_shanghaiHQ = shanghaiHQ;
+            D16_shanghaiHQ.arrivalTime = datetime('13:00:00');
+            D16_shanghaiHQ.departureTime = datetime('13:03:00');
+            D16_jiaxingS = jiaxingS;
+            D16_jiaxingS.arrivalTime = datetime('13:30:00');
+            D16_jiaxingS.departureTime = datetime('13:33:00');
+            D16_hangzhouE = hangzhouE;
+            D16_hangzhouE.arrivalTime = datetime('14:00:00');
+            D16 = Train("D16", [D16_nanjingS, D16_changzhouN, D16_suzhouN, D16_shanghaiHQ, D16_jiaxingS, D16_hangzhouE], 2);
+            D16.lineDirection = 1;
+            % endregion
+
+            % region D18
+            D18_nanjingS = nanjingS;
+            D18_nanjingS.departureTime = datetime('13:03:00');
+            D18_changzhouN = changzhouN;
+            D18_changzhouN.arrivalTime = datetime('13:30:00');
+            D18_changzhouN.departureTime = datetime('13:33:00');
+            D18_suzhouN = suzhouN;
+            D18_suzhouN.arrivalTime = datetime('14:00:00');
+            D18_suzhouN.departureTime = datetime('14:03:00');
+            D18_shanghaiHQ = shanghaiHQ;
+            D18_shanghaiHQ.arrivalTime = datetime('14:30:00');
+            D18_shanghaiHQ.departureTime = datetime('14:33:00');
+            D18_jiaxingS = jiaxingS;
+            D18_jiaxingS.arrivalTime = datetime('15:00:00');
+            D18_jiaxingS.departureTime = datetime('15:03:00');
+            D18_hangzhouE = hangzhouE;
+            D18_hangzhouE.arrivalTime = datetime('15:30:00');
+            D18 = Train("D18", [D18_nanjingS, D18_changzhouN, D18_suzhouN, D18_shanghaiHQ, D18_jiaxingS, D18_hangzhouE], 2);
+            D18.lineDirection = 1;
+            % endregion
+
+            obj.Trains = [D21, D23, D25, D22, D24, D26, G21, G23, G25, G22, G24, G26, ...
+                              D11, D13, D15, D17 ...
+                              D12, D14, D16, D18];
 
         end
 
@@ -233,65 +385,72 @@ classdef TrainDispatch < handle
 
         end
 
-        function output = filterActiveTrains(app,funcOut)
-            output=[]
+        function output = filterActiveTrains(app, funcOut)
+            output = []
+
             for i = 1:length(app.Trains)
                 train = app.Trains(i);
 
                 if funcOut(train)
-                    output=[output,train];
+                    output = [output, train];
                 end
 
             end
+
         end
 
         % endregion
 
-        function output = findAvailableTickets(app,fromStation,toStation,trainSeq)
-            "查询从 "+fromStation.stationName+" 到 "+toStation.stationName
+        function output = findAvailableTickets(app, fromStation, toStation, trainSeq)
+            "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             % 注意这里的fromStation必须包含arrivalTime，toStation必须包含arrivalTime，代表了客户到站的时间
             % 问每一辆车车会不会经过呢
-            passedTrains=app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
+            passedTrains = app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
             % 当然是选择一个最早的动车或者高铁（我干嘛要故意错过呢？）
-            shouldTake=app.GetEariestTrain(passedTrains);
-            leftPossibilities=[];
+            shouldTake = app.GetEariestTrain(passedTrains);
+            leftPossibilities = [];
 
             for i = 1:length(shouldTake)
-                train=shouldTake(i);
+                train = shouldTake(i);
+
                 if train.findPasswayStationWithoutTime(toStation)
-                    "太棒了"+train.trainCode+"能乘到";
-                    output=[trainSeq,train];
+                    "太棒了"+train.trainCode + "能乘到";
+                    output = [trainSeq, train];
 
                 end
+
             end
-            
-            
-            
+
         end
 
-        function output = GetEariestTrain(app,trainList)
+        function output = GetEariestTrain(app, trainList)
             % 返回一个最早的动车或者高铁
             % 因为是顺序查找，所以第一个D和G就是最早的，选他们就对
-            isFoundD=false;
-            isFoundG=false;
-            output=[];
+            isFoundD = false;
+            isFoundG = false;
+            output = [];
+
             for i = 1:length(trainList)
-                train=trainList(i);
-                if ~isFoundD&&train.DorG==1
-                    isFoundD=true;
-                    output=[output,train];
+                train = trainList(i);
+
+                if ~isFoundD && train.DorG == 1
+                    isFoundD = true;
+                    output = [output, train];
                 end
-                if ~isFoundG&&train.DorG==2
-                    isFoundG=true;
-                    output=[output,train];
+
+                if ~isFoundG && train.DorG == 2
+                    isFoundG = true;
+                    output = [output, train];
                 end
-                if isFoundD&&isFoundG
+
+                if isFoundD && isFoundG
                     break
                 end
-                
+
             end
-            
+
         end
+
     end
 
 end
