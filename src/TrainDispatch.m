@@ -187,6 +187,7 @@ classdef TrainDispatch < handle
             G26.lineDirection = 0;
             % endregion 短线列车
 
+            % region 长线动车
             % region D11
             D11_suzhouN = suzhouN;
             D11_suzhouN.departureTime = datetime('10:03:00');
@@ -337,9 +338,70 @@ classdef TrainDispatch < handle
             D18.lineDirection = 1;
             % endregion
 
+            % endregion 长线动车
+
+            % region 长线高铁
+            % region G11
+            G11_shanghaiHQ = shanghaiHQ;
+            G11_shanghaiHQ.departureTime = datetime('10:33:00');
+            G11_nanjingS = nanjingS;
+            G11_nanjingS.arrivalTime = datetime('11:30:00');
+            % endregion
+            G11 = Train("G11", [G11_shanghaiHQ, G11_nanjingS], 2);
+            G11.lineDirection = 0;
+
+            % region G13
+            G13_shanghaiHQ = shanghaiHQ;
+            G13_shanghaiHQ.departureTime = datetime('12:03:00');
+            G13_nanjingS = nanjingS;
+            G13_nanjingS.arrivalTime = datetime('13:00:00');
+            % endregion
+            G13 = Train("G13", [G13_shanghaiHQ, G13_nanjingS], 2);
+            G13.lineDirection = 0;
+
+            % region G15
+            G15_shanghaiHQ = shanghaiHQ;
+            G15_shanghaiHQ.departureTime = datetime('13:33:00');
+            G15_nanjingS = nanjingS;
+            G15_nanjingS.arrivalTime = datetime('14:30:00');
+            % endregion
+            G15 = Train("G15", [G15_shanghaiHQ, G15_nanjingS], 2);
+            G15.lineDirection = 0;
+
+            % region G12
+            G12_nanjingS = nanjingS;
+            G12_nanjingS.departureTime = datetime('10:33:00');
+            G12_shanghaiHQ = shanghaiHQ;
+            G12_shanghaiHQ.arrivalTime = datetime('11:30:00');
+            % endregion
+            G12 = Train("G12", [G12_nanjingS, G12_shanghaiHQ], 2);
+            G12.lineDirection = 1;
+
+            % region G14
+            G14_nanjingS = nanjingS;
+            G14_nanjingS.departureTime = datetime('12:03:00');
+            G14_shanghaiHQ = shanghaiHQ;
+            G14_shanghaiHQ.arrivalTime = datetime('13:00:00');
+            % endregion
+            G14 = Train("G14", [G14_nanjingS, G14_shanghaiHQ], 2);
+            G14.lineDirection = 1;
+
+            % region G16
+            G16_nanjingS = nanjingS;
+            G16_nanjingS.departureTime = datetime('13:33:00');
+            G16_shanghaiHQ = shanghaiHQ;
+            G16_shanghaiHQ.arrivalTime = datetime('14:30:00');
+            % endregion
+            G16 = Train("G16", [G16_nanjingS, G16_shanghaiHQ], 2);
+            G16.lineDirection = 1;
+            % endregion 长线高铁
+
+
             obj.Trains = [D21, D23, D25, D22, D24, D26, G21, G23, G25, G22, G24, G26, ...
                               D11, D13, D15, D17 ...
-                              D12, D14, D16, D18];
+                              D12, D14, D16, D18, ...
+                              G11, G13, G15, ...
+                              G12, G14, G16];
 
         end
 
