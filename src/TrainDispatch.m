@@ -17,6 +17,17 @@ classdef TrainDispatch < handle
     % ========时间模拟系统==========
     methods (Access = private)
 
+        function output = isEleInList(~, list, ele)
+            tf = ismember(list, ele);
+
+            if sum(tf) == 1
+                output = true;
+            else
+                output = false;
+            end
+
+        end
+
     end
 
     methods (Access = public)
@@ -396,7 +407,6 @@ classdef TrainDispatch < handle
             G16.lineDirection = 1;
             % endregion 长线高铁
 
-
             obj.Trains = [D21, D23, D25, D22, D24, D26, G21, G23, G25, G22, G24, G26, ...
                               D11, D13, D15, D17 ...
                               D12, D14, D16, D18, ...
@@ -448,7 +458,7 @@ classdef TrainDispatch < handle
         end
 
         function output = filterActiveTrains(app, funcOut)
-            output = []
+            output = [];
 
             for i = 1:length(app.Trains)
                 train = app.Trains(i);
@@ -463,22 +473,48 @@ classdef TrainDispatch < handle
 
         % endregion
 
-        function output = findAvailableTickets(app, fromStation, toStation, trainSeq)
+        function output = findAvailableTickets(app, fromStation, toStation,level)
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
+            "当前两个站点的距离为"+fromStation.getDistance(toStation)
+            output = "";
             % 注意这里的fromStation必须包含arrivalTime，toStation必须包含arrivalTime，代表了客户到站的时间
             % 问每一辆车车会不会经过呢
             passedTrains = app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
-            % 当然是选择一个最早的动车或者高铁（我干嘛要故意错过呢？）
+            % 不用故意错过列车
             shouldTake = app.GetEariestTrain(passedTrains);
-            leftPossibilities = [];
 
             for i = 1:length(shouldTake)
                 train = shouldTake(i);
+                % 判断当前列车是否可以直达终点站
+                % toStation必须晚于fromStation
+                queryToStation = toStation;
+                queryToStation.arrivalTime = train.getStationDepartureTime(fromStation);
 
-                if train.findPasswayStationWithoutTime(toStation)
-                    "太棒了"+train.trainCode + "能乘到";
-                    output = [trainSeq, train];
+                if ~train.findPasswayStation(queryToStation)
+                    "很可惜"+train.trainCode + "不能乘到"
+                    % 假设乘坐该列车到终点站
+                    % 看一看是否离终点更远了
+                    if train.remainingStations(end).getDistance(toStation)>fromStation.getDistance(toStation)
+                        % "乘坐"+train.trainCode + "到终点站会更远"
+                        continue;
+                    end
+                    nextSeq = app.findAvailableTickets(train.remainingStations(end), toStation,level+1);
+                    if ~strcmp(nextSeq,"")
+                        %找到合适的线路了
+                        if  level==0
+                            "你可以先乘坐"+train.trainCode+"到"+train.remainingStations(end).stationName
+                            "然后乘坐"+nextSeq+"到达"
+                        end
 
+                        output = output+train.trainCode+","+nextSeq
+                    end
+                    
+
+                else
+                    if level==0
+                        "可以乘坐"+train.trainCode + "直达"
+                    end
+                    output = output+""+train.trainCode+"-"
                 end
 
             end
@@ -488,25 +524,15 @@ classdef TrainDispatch < handle
         function output = GetEariestTrain(app, trainList)
             % 返回一个最早的动车或者高铁
             % 因为是顺序查找，所以第一个D和G就是最早的，选他们就对
-            isFoundD = false;
-            isFoundG = false;
+            FoundType = [];
             output = [];
 
             for i = 1:length(trainList)
                 train = trainList(i);
 
-                if ~isFoundD && train.DorG == 1
-                    isFoundD = true;
+                if ~app.isEleInList(FoundType, train.PassType)
+                    FoundType = [FoundType, train.PassType];
                     output = [output, train];
-                end
-
-                if ~isFoundG && train.DorG == 2
-                    isFoundG = true;
-                    output = [output, train];
-                end
-
-                if isFoundD && isFoundG
-                    break
                 end
 
             end

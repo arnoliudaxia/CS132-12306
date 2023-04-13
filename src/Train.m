@@ -10,6 +10,77 @@ classdef Train < handle
         lineType %两条线路，短的是1，长的是2
         lineDirection %从上到下是0，反过来是1
         DorG %动车还是高铁（直达还是经停）
+        PassType %根据通过站点对所有列车分类
+    end
+
+    methods (Access = private)
+
+        function output = passType(~, trainName)
+            output=0;
+
+            switch trainName
+                case 'D11'
+                    output=1;
+                case 'D13'
+                    output=2;
+                case 'D15'
+                    output=2;
+                case 'D17'
+                    output=2;
+                case 'G11'
+                    output=3;
+                case 'G13'
+                    output=3;
+                case 'G15'
+                    output=3;
+                case 'D12'
+                    output=4;
+                case 'D14'
+                    output=5;
+                case 'D16'
+                    output=5;
+                case 'D18'
+                    output=5;
+                case 'G12'
+                    output=6;
+                case 'G14'
+                    output=6;
+                case 'G16'
+                    output=6;
+                case 'D21'
+                    output=7;
+                case 'D23'
+                    output=7;
+                case 'D25'
+                    output=7;
+                case 'G21'
+                    output=8;
+                case 'G23'
+                    output=8;
+                case 'G25'
+                    output=8;
+                case 'D22'
+                    output=9;
+                case 'D24'
+                    output=9;
+                case 'D26'
+                    output=9;
+                case 'G22'
+                    output=10;
+                case 'G24'
+                    output=10;
+                case 'G26'
+                    output=10;
+
+                otherwise
+                    disp('Error! 无法对火车的站点进行归类!');
+            end
+            if output==0
+                disp('Error! 无法对火车的站点进行归类!');
+            end
+
+        end
+
     end
 
     methods (Access = public)
@@ -28,6 +99,7 @@ classdef Train < handle
                 % "高铁"
                 obj.DorG = 2;
             end
+            obj.PassType=obj.passType(code)
 
         end
 
@@ -74,7 +146,7 @@ classdef Train < handle
             for i = 1:length(app.remainingStations)
                 station = app.remainingStations(i);
 
-                if strcmp(station.stationName, queryStation.stationName)&&~isempty(station.departureTime)
+                if strcmp(station.stationName, queryStation.stationName) && ~isempty(station.departureTime)
                     %同一个站点而且车车必须要开不能使终点站
                     if (station.departureTime - minutes(5)) > queryStation.arrivalTime
                         % 开车前5min停止购票
@@ -90,6 +162,7 @@ classdef Train < handle
         function output = findPasswayStationWithoutTime(app, queryStation)
             % 只看会不会经过，其他一概不考虑
             output = 0;
+
             for i = 1:length(app.remainingStations)
                 station = app.remainingStations(i);
 
@@ -98,9 +171,25 @@ classdef Train < handle
                 end
 
             end
+
+        end
+
+        function output = getStationDepartureTime(app, queryStation)
+            % 获取车车在该站点的出发时间
+
+            for i = 1:length(app.remainingStations)
+                station = app.remainingStations(i);
+
+                if strcmp(station.stationName, queryStation.stationName)
+                    output = station.departureTime;
+                end
+
+            end
+
+        end
             
         end
 
     end
 
-end
+
