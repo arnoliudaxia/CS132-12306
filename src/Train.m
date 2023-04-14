@@ -202,12 +202,8 @@ classdef Train < handle
                 if strcmp(station.stationName, filterStation.stationName) && flag
                     flag=false;
                 end
-                if ~flag&&strcmp(station.stationName, queryStation.stationName) && ~isempty(station.departureTime)
-                    %同一个站点而且车车必须要开不能使终点站
-                    if (station.departureTime - minutes(5)) > queryStation.arrivalTime
-                        % 开车前5min停止购票
-                        output = 1;
-                    end
+                if ~flag&&strcmp(station.stationName, queryStation.stationName)
+                    output = 1;
 
                 end
 

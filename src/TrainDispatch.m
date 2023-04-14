@@ -486,11 +486,8 @@ classdef TrainDispatch < handle
             for i = 1:length(shouldTake)
                 train = shouldTake(i);
                 % 判断当前列车是否可以直达终点站
-                % toStation必须晚于fromStation
-                queryToStation = toStation;
-                queryToStation.arrivalTime = train.getStationDepartureTime(fromStation);
 
-                if ~train.findPasswayStation(queryToStation)
+                if ~train.findPasswayStationAfterStation(toStation,fromStation)
                     "很可惜"+train.trainCode + "不能乘到"
                     % 假设乘坐该列车到终点站
                     % 看一看是否离终点更远了
