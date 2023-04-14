@@ -506,7 +506,6 @@ classdef TrainDispatch < handle
                         output = output+train.trainCode+","+nextSeq
                     end
                     
-
                 else
                     if level==0
                         "可以乘坐"+train.trainCode + "直达"
@@ -514,6 +513,10 @@ classdef TrainDispatch < handle
                     output = output+""+train.trainCode+"-"
                 end
 
+            end
+
+            if  level==0
+                output=output()
             end
 
         end
