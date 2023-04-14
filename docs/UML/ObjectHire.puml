@@ -5,6 +5,9 @@ class TrainDispatch{
 datetime SysTime
 List<Station> Stations
 List<Train> Trains
+
+void changeSysTime(deltaTime)
+string findAvailableTickets(fromStation,toStation,level)
 }
 
 class Train{
@@ -13,17 +16,15 @@ class Train{
  List<Station> remainingStations
  int lineType
  bool lineDirection
-' List<Passanger> passangers
-}
+ bool DorG
+ int PassType
 
-class Passanger{
-int passangerId
-string passangerName
-Train bookTrain
-Passangertatus myStatus
-List<Ticket> myTickets
+ void updateTrainStatus()
+ bool findPasswayStation(queryStation)
+ bool findPasswayStationWithoutTime(queryStation)
+ bool findPasswayStationAfterStation(queryStation,filterStation)
+ datetime getStationDepartureTime(queryStation)
 
-bool bookTicket(Ticket)
 
 }
 
@@ -31,36 +32,45 @@ class Station{
     string stationName
     datetime arrivalTime
     datetime departureTime
+
+    int getDistance(other)
+    bool isSameSide(other)
 }
 
 TrainDispatch *-- Train
-TrainDispatch *-- Passanger
 TrainDispatch *-- Station
 
-class Ticket{
-    Train ticketTrain
-'    string ticketType
-'    int ticketPrice
-    bool isOcupied
-    Passanger bookPassanger
-    Station fromStation
-    Station toStation
-}
-Station *.. Train
-Ticket *-- Station
-Ticket *.. Passanger
 
-TrainDispatch *-- Ticket
+Station ..* Train
+
+
 
 enum trainStatus{
-    '等待发车
     NOTSTARTED
-    'train is running
     RUNNING
-    'train is stopped
     STOPPED
 }
 
 Train *-- trainStatus
+
+interface matlabAPP{
+
+}
+
+class debugApp{
+    void display_update_systime()
+    void updateTrainUI()
+}
+TrainDispatch *-- debugApp
+matlabAPP *.. debugApp
+
+class mainApp{
+    string searchTrains()
+}
+TrainDispatch *-- mainApp
+matlabAPP *.. mainApp
+
+
+
 
 @enduml

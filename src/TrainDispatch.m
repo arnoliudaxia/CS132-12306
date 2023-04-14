@@ -9,9 +9,9 @@ classdef TrainDispatch < handle
         SysTimeDisplay %该变量用于显示火车世界时间，格式为HH:MM
         SysTimeCron
         Trains = []
+        Stations = []
         mainApp
         debugApp
-        Stations = []
     end
 
     % ========时间模拟系统==========
@@ -24,6 +24,24 @@ classdef TrainDispatch < handle
                 output = true;
             else
                 output = false;
+            end
+
+        end
+
+        function output = GetEariestTrain(app, trainList)
+            % 返回一个最早的动车或者高铁
+            % 因为是顺序查找，所以第一个D和G就是最早的，选他们就对
+            FoundType = [];
+            output = [];
+
+            for i = 1:length(trainList)
+                train = trainList(i);
+
+                if ~app.isEleInList(FoundType, train.PassType)
+                    FoundType = [FoundType, train.PassType];
+                    output = [output, train];
+                end
+
             end
 
         end
@@ -521,23 +539,7 @@ classdef TrainDispatch < handle
 
         end
 
-        function output = GetEariestTrain(app, trainList)
-            % 返回一个最早的动车或者高铁
-            % 因为是顺序查找，所以第一个D和G就是最早的，选他们就对
-            FoundType = [];
-            output = [];
-
-            for i = 1:length(trainList)
-                train = trainList(i);
-
-                if ~app.isEleInList(FoundType, train.PassType)
-                    FoundType = [FoundType, train.PassType];
-                    output = [output, train];
-                end
-
-            end
-
-        end
+        
 
     end
 
