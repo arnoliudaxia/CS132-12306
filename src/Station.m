@@ -6,6 +6,8 @@ classdef Station
         stationName
         arrivalTime
         departureTime
+        remainingSeats=[1,2] %到该站的剩余座位数，第一个是商务，第二个是经济
+
     end
 
     methods

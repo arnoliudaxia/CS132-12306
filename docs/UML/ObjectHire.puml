@@ -6,8 +6,13 @@ datetime SysTime
 List<Station> Stations
 List<Train> Trains
 
+
 void changeSysTime(deltaTime)
 string findAvailableTickets(fromStation,toStation,level)
+void bookTicket(trainCode,fromStation,toStation,level)
+Train findTrain(trainCode)
+int[] requestAvailableSeats(trainCode,fromStation, toStation)
+
 }
 
 class Train{
@@ -24,7 +29,8 @@ class Train{
  bool findPasswayStationWithoutTime(queryStation)
  bool findPasswayStationAfterStation(queryStation,filterStation)
  datetime getStationDepartureTime(queryStation)
-
+ void bookTicket(fromStation,toStation,seatLevel)
+int[] requestAvailableSeats(app,fromStation, toStation)
 
 }
 
@@ -32,6 +38,8 @@ class Station{
     string stationName
     datetime arrivalTime
     datetime departureTime
+ int[] remainingSeats
+
 
     int getDistance(other)
     bool isSameSide(other)

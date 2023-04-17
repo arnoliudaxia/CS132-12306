@@ -491,7 +491,7 @@ classdef TrainDispatch < handle
 
         % endregion
 
-        function output = findAvailableTickets(app, fromStation, toStation,level)
+        function output = findAvailableTickets(app, fromStation, toStation, level)
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             "当前两个站点的距离为"+fromStation.getDistance(toStation)
             output = "";
@@ -505,40 +505,60 @@ classdef TrainDispatch < handle
                 train = shouldTake(i);
                 % 判断当前列车是否可以直达终点站
 
-                if ~train.findPasswayStationAfterStation(toStation,fromStation)
+                if ~train.findPasswayStationAfterStation(toStation, fromStation)
                     "很可惜"+train.trainCode + "不能乘到"
                     % 假设乘坐该列车到终点站
                     % 看一看是否离终点更远了
-                    if train.remainingStations(end).getDistance(toStation)>fromStation.getDistance(toStation)
+                    if train.remainingStations(end).getDistance(toStation) > fromStation.getDistance(toStation)
                         % "乘坐"+train.trainCode + "到终点站会更远"
                         continue;
                     end
-                    nextSeq = app.findAvailableTickets(train.remainingStations(end), toStation,level+1);
-                    if ~strcmp(nextSeq,"")
+
+                    nextSeq = app.findAvailableTickets(train.remainingStations(end), toStation, level + 1);
+
+                    if ~strcmp(nextSeq, "")
                         %找到合适的线路了
-                        if  level==0
-                            "你可以先乘坐"+train.trainCode+"到"+train.remainingStations(end).stationName
-                            "然后乘坐"+nextSeq+"到达"
+                        if level == 0
+                            "你可以先乘坐"+train.trainCode + "到"+train.remainingStations(end).stationName
+                            "然后乘坐"+nextSeq + "到达"
                         end
 
-                        output = output+train.trainCode+","+nextSeq
+                        output = output + train.trainCode + ","+nextSeq
                     end
-                    
+
                 else
-                    if level==0
+
+                    if level == 0
                         "可以乘坐"+train.trainCode + "直达"
                     end
-                    output = output+""+train.trainCode+"-"
+
+                    output = output + ""+train.trainCode + "-"
                 end
 
             end
 
-            if  level==0
-                output=output()
+            if level == 0
+                output = output()
             end
 
         end
+        
+        function output = findTrain(app,trainCode)
+            % 查询列车
+            output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
+        end
 
+        function output = bookTicket(app, trainCode, fromStation, toStation,level)
+            train = app.findTrain(trainCode);
+            tarin.bookTicket(fromStation, toStation,level);
+        end
+
+
+        function output = requestAvailableSeats(app,trainCode,fromStation, toStation)
+            train = app.findTrain(trainCode);
+            output = train.requestAvailableSeats(fromStation, toStation);
+        end
+            
         
 
     end

@@ -190,24 +190,72 @@ classdef Train < handle
 
         end
 
-        function output = findPasswayStationAfterStation(app, queryStation,filterStation)
+        function output = findPasswayStationAfterStation(app, queryStation, filterStation)
             % 判断这俩车车是否会经过该站点（包括时间点信息，所以queryStation需要包含arrivalTime）
             % output为0代表不经过，为1代表经过
             output = 0;
-            flag=true;
+            flag = true;
 
             for i = 1:length(app.remainingStations)
                 station = app.remainingStations(i);
 
                 if strcmp(station.stationName, filterStation.stationName) && flag
-                    flag=false;
+                    flag = false;
                 end
-                if ~flag&&strcmp(station.stationName, queryStation.stationName)
+
+                if ~flag && strcmp(station.stationName, queryStation.stationName)
                     output = 1;
 
                 end
 
             end
+
+        end
+
+        function output = bookTicket(app, fromStation, toStation, seatLevel)
+            startBookFlag = false;
+
+            for i = 1:app.remainingStations.length
+                station = app.remainingStations(i);
+
+                if strcmp(app.remainingStations(i).stationName, fromStation.stationName)
+                    startBookFlag = true;
+                end
+
+                if startBookFlag
+                    station.remainingSeats(seatLevel) = station.remainingSeats(seatLevel) - 1;
+                end
+
+                if strcmp(app.remainingStations(i).stationName, toStation.stationName)
+                    break;
+                end
+
+            end
+
+        end
+
+        function output = requestAvailableSeats(app,fromStation, toStation)
+            minVip=100;
+            minNPC=100;
+            startBookFlag = false;
+
+            for i = 1:app.remainingStations.length
+                station = app.remainingStations(i);
+                
+                if strcmp(app.remainingStations(i).stationName, fromStation.stationName)
+                    startBookFlag = true;
+                end
+
+                if startBookFlag
+                    minVip=min(minVip,station.remainingSeats(1));
+                    minNPC=min(minNPC,station.remainingSeats(2));
+                end
+
+                if strcmp(app.remainingStations(i).stationName, toStation.stationName)
+                    break;
+                end
+            end
+            output=[minVip,minNPC];
 
         end
 

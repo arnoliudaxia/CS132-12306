@@ -9,6 +9,7 @@ debugUI= DebugApp();
 trainDispath.debugApp=debugUI;
 debugUI.trainDispatch=trainDispath;
 debugUI.display_update_systime();
+debugUI.displaySeatTrain=trainDispath.Trains(2);
 % init a basic env
 % Xiaoming=Passanger(0,"XiaoMing");
 % ui.bindPassanger(Xiaoming);
