@@ -7,6 +7,7 @@ trainDispath.mainApp=mainapp;
 mainapp.trainDispatch=trainDispath;
 debugUI= DebugApp();
 trainDispath.debugApp=debugUI;
+mainapp.debugApp=debugUI;
 debugUI.trainDispatch=trainDispath;
 debugUI.display_update_systime();
 debugUI.displaySeatTrain=trainDispath.Trains(2);
