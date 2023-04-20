@@ -190,6 +190,20 @@ classdef Train < handle
 
         end
 
+        function output = getStationArrrivalTime(app, queryStation)
+            % 获取车车在该站点的到达时间
+
+            for i = 1:length(app.remainingStations)
+                station = app.remainingStations(i);
+
+                if strcmp(station.stationName, queryStation.stationName)
+                    output = station.arrivalTime;
+                end
+
+            end
+
+        end
+
         function output = findPasswayStationAfterStation(app, queryStation, filterStation)
             % 判断这俩车车是否会经过该站点（包括时间点信息，所以queryStation需要包含arrivalTime）
             % output为0代表不经过，为1代表经过
