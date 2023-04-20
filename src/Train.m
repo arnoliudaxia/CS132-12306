@@ -227,6 +227,7 @@ classdef Train < handle
         end
 
         function output = bookTicket(app, fromStation, toStation, seatLevel)
+            "订购从"+fromStation.stationName+"到"+toStation.stationName+"的"+seatLevel+"票"
             startBookFlag = false;
 
             for i = 1:app.remainingStations.length
@@ -236,13 +237,15 @@ classdef Train < handle
                     startBookFlag = true;
                 end
 
+                if strcmp(app.remainingStations(i).stationName, toStation.stationName)
+                    break;
+                end
+
                 if startBookFlag
                     station.remainingSeats(seatLevel) = station.remainingSeats(seatLevel) - 1;
                 end
 
-                if strcmp(app.remainingStations(i).stationName, toStation.stationName)
-                    break;
-                end
+                
 
             end
 
@@ -253,7 +256,7 @@ classdef Train < handle
             minNPC=100;
             startBookFlag = false;
 
-            for i = 1:app.remainingStations.length
+            for i = 1:length(app.remainingStations)
                 station = app.remainingStations(i);
                 
                 if strcmp(app.remainingStations(i).stationName, fromStation.stationName)
