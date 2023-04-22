@@ -80,6 +80,7 @@ class mainApp{
     int[2] remainingSeats
     string usrID
     ArrayList myTickets
+    usrStatus UsrStatus;
 
     -void showTickets()
     -void writeTicketPanel(...)
@@ -87,6 +88,11 @@ class mainApp{
     string searchTrains()
     void bookTicketCommon(...)
 }
+enum usrStatus{
+    IDLE
+    ONBOARD
+}
+mainApp *-- usrStatus
 TrainDispatch *-- mainApp
 matlabAPP *.. mainApp
 
