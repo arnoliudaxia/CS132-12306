@@ -5,6 +5,7 @@ class TrainDispatch{
 datetime SysTime
 List<Station> Stations
 List<Train> Trains
+string[] usrIDs;
 
 
 void changeSysTime(deltaTime)
@@ -73,7 +74,18 @@ TrainDispatch *-- debugApp
 matlabAPP *.. debugApp
 
 class mainApp{
+    +trainDispatch
+    +debugApp
+    int level2Book
+    int[2] remainingSeats
+    string usrID
+    ArrayList myTickets
+
+    -void showTickets()
+    -void writeTicketPanel(...)
+    -void refreshSeatOccupyUI()
     string searchTrains()
+    void bookTicketCommon(...)
 }
 TrainDispatch *-- mainApp
 matlabAPP *.. mainApp

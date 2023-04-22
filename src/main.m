@@ -3,8 +3,9 @@
 trainDispath=TrainDispatch();
 % Initialize the UI
 mainapp= mainApp();
-trainDispath.mainApp=mainapp;
 mainapp.trainDispatch=trainDispath;
+mainapp.usrID="小明";
+trainDispath.usrIDs=["小明"];
 debugUI= DebugApp();
 trainDispath.debugApp=debugUI;
 mainapp.debugApp=debugUI;

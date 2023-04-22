@@ -10,8 +10,8 @@ classdef TrainDispatch < handle
         SysTimeCron
         Trains = []
         Stations = []
-        mainApp
         debugApp
+        usrIDs=[]
     end
 
     % ========时间模拟系统==========
