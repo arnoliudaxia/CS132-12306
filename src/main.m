@@ -3,10 +3,12 @@
 trainDispath=TrainDispatch();
 % Initialize the UI
 mainapp= mainApp();
-trainDispath.mainApp=mainapp;
 mainapp.trainDispatch=trainDispath;
+mainapp.usrID="小明";
+trainDispath.usrIDs=["小明"];
 debugUI= DebugApp();
 trainDispath.debugApp=debugUI;
+mainapp.debugApp=debugUI;
 debugUI.trainDispatch=trainDispath;
 debugUI.display_update_systime();
 debugUI.displaySeatTrain=trainDispath.Trains(2);
