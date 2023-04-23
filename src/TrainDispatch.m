@@ -11,7 +11,7 @@ classdef TrainDispatch < handle
         Trains = []
         Stations = []
         debugApp
-        usrIDs=[]
+        usrIDs = []
     end
 
     % ========时间模拟系统==========
@@ -542,24 +542,35 @@ classdef TrainDispatch < handle
             end
 
         end
-        
-        function output = findTrain(app,trainCode)
+
+        function output = findTrain(app, trainCode)
             % 查询列车
             output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
         end
 
-        function output = bookTicket(app, trainCode, fromStation, toStation,level)
+        function output = bookTicket(app, trainCode, fromStation, toStation, level)
             train = app.findTrain(trainCode);
-            tarin.bookTicket(fromStation, toStation,level);
+            tarin.bookTicket(fromStation, toStation, level);
         end
 
-
-        function output = requestAvailableSeats(app,trainCode,fromStation, toStation)
+        function output = requestAvailableSeats(app, trainCode, fromStation, toStation)
             train = app.findTrain(trainCode);
             output = train.requestAvailableSeats(fromStation, toStation);
         end
-            
-        
+
+        function output = getPriceForTransferTrains(app, trains, fromStation, toStation)
+            "计算含有转乘的票价"
+            output = 0;
+            "先计算除了最后一个车从from到最后的价格"
+
+            for i = 1:length(trains) - 1
+                output = output + app.findTrain(trains(i)).getPriceForNonDirect();
+            end
+
+            "然后获取最后一个转乘车的价格"
+            output = output + app.findTrain(trains(end)).getPriceToStaion(toStation);
+
+        end
 
     end
 

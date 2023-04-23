@@ -226,11 +226,13 @@ classdef Train < handle
 
         end
 
-        function bookTicket(app, fromStation, toStation, seatLevel,numberOfTickets)
+        function bookTicket(app, fromStation, toStation, seatLevel, numberOfTickets)
+
             if isempty(numberOfTickets)
-                numberOfTickets=1;
+                numberOfTickets = 1;
             end
-            "订购从"+fromStation.stationName+"到"+toStation.stationName+"的"+seatLevel+"票"
+
+            "订购从"+fromStation.stationName + "到"+toStation.stationName + "的"+seatLevel + "票"
             startBookFlag = false;
 
             for i = 1:length(app.remainingStations)
@@ -248,37 +250,76 @@ classdef Train < handle
                     app.remainingStations(i).remainingSeats(seatLevel) = station.remainingSeats(seatLevel) - numberOfTickets;
                 end
 
-                "当前车次"+app.trainCode+"在"+station.stationName+"的剩余座位数为"
-                "商务舱"+app.remainingStations(i).remainingSeats(1)+"普通座"+app.remainingStations(i).remainingSeats(2)
-
-                
+                "当前车次"+app.trainCode + "在"+station.stationName + "的剩余座位数为"
+                "商务舱"+app.remainingStations(i).remainingSeats(1) + "普通座"+app.remainingStations(i).remainingSeats(2)
 
             end
 
         end
 
-        function output = requestAvailableSeats(app,fromStation, toStation)
-            minVip=100;
-            minNPC=100;
+        function output = requestAvailableSeats(app, fromStation, toStation)
+            minVip = 100;
+            minNPC = 100;
             startBookFlag = false;
 
             for i = 1:length(app.remainingStations)
                 station = app.remainingStations(i);
-                
+
                 if strcmp(app.remainingStations(i).stationName, fromStation.stationName)
                     startBookFlag = true;
                 end
 
                 if startBookFlag
-                    minVip=min(minVip,station.remainingSeats(1));
-                    minNPC=min(minNPC,station.remainingSeats(2));
+                    minVip = min(minVip, station.remainingSeats(1));
+                    minNPC = min(minNPC, station.remainingSeats(2));
                 end
 
                 if strcmp(app.remainingStations(i).stationName, toStation.stationName)
                     break;
                 end
+
             end
-            output=[minVip,minNPC];
+
+            output = [minVip, minNPC];
+
+        end
+
+        function output = getPrice(app, station1, station2)
+            "只考虑直达情况下从s1到s2的价格"
+
+            if app.DorG == 2
+                "高铁,一律4元"
+                output = 4;
+            else
+                "动车，一站一元"
+                output = station1.getDistance(station2);
+            end
+
+        end
+
+        function output = getPriceForNonDirect(app)
+            "只考虑非直达情况下从s1乘到终点站的价格"
+
+            if app.DorG == 2
+                "高铁,一律4元"
+                output = 4;
+            else
+                "动车，一站一元,直接考虑剩下多少沾点"
+                output = length(remainingStations);
+            end
+
+        end
+
+        function output = getPriceToStaion(app, station)
+            "只考虑直达情况下从s1到s2的价格"
+
+            if app.DorG == 2
+                "高铁,一律4元"
+                output = 4;
+            else
+                "动车，一站一元"
+                output = station.getDistance(app.remainingStations(1));
+            end
 
         end
 
