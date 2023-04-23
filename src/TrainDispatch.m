@@ -658,7 +658,7 @@ classdef TrainDispatch < handle
         % region 用户相关API
 
         function output = findUsr(app, usrname)
-            "返回结构体数组中的对应用户结构体"
+            "返回结构体数组中的对应用户结构体的缩影"
             idx = find(strcmp(app.usrsinfo.usrName, usrname));
 
             if isempty(idx)
@@ -667,6 +667,13 @@ classdef TrainDispatch < handle
                 output = idx;
             end
 
+        end
+
+        function output = getMyTickets(app,usrname)
+            usrIndex = app.findUsr(usrname);
+            output = app.usrsinfo(usrIndex).ticket;
+        
+            
         end
 
         function output = getRecentTicket(app, usrName)
