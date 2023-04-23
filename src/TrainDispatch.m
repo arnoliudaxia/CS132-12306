@@ -662,29 +662,28 @@ classdef TrainDispatch < handle
             idx = find(strcmp(app.usrsinfo.usrName, usrname));
 
             if isempty(idx)
-                output = [];
+                output = -1;
             else
-                output = app.usrsinfo(idx);
+                output = idx;
             end
 
         end
 
         function output = getRecentTicket(app, usrName)
-            usr = app.findUsr(usrName);
-            ticket = usr.ticket;
+                        usrIndex = app.findUsr(usrName);
+            tickets = app.usrsinfo(usrIndex).ticket;
 
-            if isempty(ticket)
+            if isempty(tickets)
                 output = [];
                 return
             end
 
             earTIme = datetime("23:59:59");
             earIndex = 0;
-            [row_num, ~] = size(app.myTickets);
 
-            for i = 1:row_num
-                ticket = app.myTickets(i, :);
-                time = datetime(ticket(4).stationName, 'Format', 'HH:mm');
+            for i = 1:length(tickets)
+                ticket = tickets(i);
+                time = ticket.startTime;
 
                 if time < earTIme
                     earTIme = time;
@@ -692,12 +691,13 @@ classdef TrainDispatch < handle
                 end
 
             end
+            output=tickets(earIndex);
 
         end
 
         function output = recordTicket(app, usrname, ticket)
-            usr = app.findUsr(usrname);
-            usr.ticket = [usr.ticket, ticket];
+            usrIndex = app.findUsr(usrname);
+            app.usrsinfo(usrIndex).ticket = [app.usrsinfo(usrIndex).ticket, ticket];
 
         end
 
