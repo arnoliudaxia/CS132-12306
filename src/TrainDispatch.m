@@ -13,6 +13,7 @@ classdef TrainDispatch < handle
         debugApp
         usrsinfo % 储存用户相关的信息，包括用户名、车票
         client=[]
+        deltaTimePerFrame=5;
     end
 
     % ========时间模拟系统==========
@@ -78,7 +79,7 @@ classdef TrainDispatch < handle
                         if app.SysTime<recentTicket.startTime
                             "没上车给爷滚蛋"
                             app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
-                    end
+                        end
 
                     end
 
@@ -100,11 +101,10 @@ classdef TrainDispatch < handle
         function obj = TrainDispatch()
             "建立火车调度中心"
             "模拟时间系统启动"
-            obj.SysTime = datetime('09:50:00');
+            obj.SysTime = datetime('09:40:00');
             obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
 
-            SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 2, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 4);
-            % start(SysTimeCron);
+            obj.SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 2, 'TimerFcn', @obj.update_sys_time);
             % init stations
             nanjingS = Station("南京南");
             changzhouN = Station("常州北");
@@ -482,22 +482,32 @@ classdef TrainDispatch < handle
 
         function update_sys_time(Obj, ~, ~)
             % "更新时间"
-            Obj.changeSysTime(minutes(5));
+            Obj.changeSysTime(minutes(Obj.deltaTimePerFrame));
 
         end
 
         function changeSysTime(app, deltaTime)
-            "改变时间"
+            "改变时间";
             app.SysTime = app.SysTime + deltaTime;
             app.SysTimeDisplay = datestr(app.SysTime, 'HH:MM'); % 转换为字符串格式
             "显示时间";
             app.debugApp.display_update_systime();
-            "更新所有列车状态"
+            "更新所有列车状态";
             app.ForEachTrain(@(train) train.updateTrainStatus(app.SysTime));
 
             app.debugApp.updateTrainUI();
             app.checkIfOnTrain();
 
+        end
+
+        function timerControl(app,flag)
+            if flag==true
+                start(app.SysTimeCron);
+            else
+                stop(app.SysTimeCron);
+            end
+            
+            
         end
 
         % region "列车遍历回调"
@@ -537,12 +547,12 @@ classdef TrainDispatch < handle
 
         end
 
-        % endregion
-
+        
         function output = findTrain(app, trainCode)
             % 查询列车
             output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
         end
+        % endregion
 
         % region 订票相关API
 
