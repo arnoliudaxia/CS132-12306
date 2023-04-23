@@ -12,6 +12,7 @@ classdef TrainDispatch < handle
         Stations = []
         debugApp
         usrsinfo % 储存用户相关的信息，包括用户名、车票
+        client=[]
     end
 
     % ========时间模拟系统==========
@@ -46,6 +47,52 @@ classdef TrainDispatch < handle
 
         end
 
+        function output = checkIfOnTrain(app)
+            
+            
+            for i = 1:length(app.usrsinfo)
+                
+                usr=app.usrsinfo(i);
+                recentTicket=app.getRecentTicket(usr.usrName);
+                if isempty(recentTicket)
+                    continue;
+                end
+                if strcmp(usr.usrStatus,"ONBOARD")
+                    app.client(i).getTrainBtn.Enable=false;
+                    % 下车了销毁票票
+                    if app.SysTime>recentTicket.toTime
+                        % 时间晚于票的到达时间，滚下去！
+                        app.usrsinfo(i).usrStatus="IDLE";
+                        % 顺便销票
+                        app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
+                    end
+                end
+
+                if strcmp(usr.usrStatus,"IDLE")
+                    % 发车前三分钟让客户上车
+                    if app.SysTime<recentTicket.startTime &&  app.SysTime>=recentTicket.startTime-minutes(3)
+                        app.client(i).getTrainBtn.Enable=true;
+                    end
+                    if app.debugApp.autoGetTrain.Value==false
+                        % "手动上车模式"
+                        if app.SysTime<recentTicket.startTime
+                            "没上车给爷滚蛋"
+                            app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
+                    end
+
+                    end
+
+                end
+            
+
+
+                
+            end
+            
+            % 随着时间更新，看一看客户是否上车了，没有上车直接踢走
+
+        end
+
     end
 
     methods (Access = public)
@@ -53,7 +100,7 @@ classdef TrainDispatch < handle
         function obj = TrainDispatch()
             "建立火车调度中心"
             "模拟时间系统启动"
-            obj.SysTime = datetime('10:00:00');
+            obj.SysTime = datetime('09:50:00');
             obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
 
             SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 2, 'TimerFcn', @obj.update_sys_time, 'TasksToExecute', 4);
@@ -449,6 +496,7 @@ classdef TrainDispatch < handle
             app.ForEachTrain(@(train) train.updateTrainStatus(app.SysTime));
 
             app.debugApp.updateTrainUI();
+            app.checkIfOnTrain();
 
         end
 
@@ -736,6 +784,11 @@ classdef TrainDispatch < handle
             usrIndex = app.findUsr(usrname);
             app.usrsinfo(usrIndex).ticket = [app.usrsinfo(usrIndex).ticket, ticket];
 
+        end
+
+        function onBoard(app,usrname)
+            usrIndex = app.findUsr(usrname);
+            app.usrsinfo(usrIndex).usrStatus="ONBOARD";          
         end
 
         % endregion

@@ -95,7 +95,7 @@ matlabAPP *.. mainApp
 
 struct UsrsInfo{
     string usrName
-    usrStatus status
+    usrStatus usrStatus
 }
 struct ticket{
     string trainCode
