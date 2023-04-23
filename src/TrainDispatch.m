@@ -11,7 +11,7 @@ classdef TrainDispatch < handle
         Trains = []
         Stations = []
         debugApp
-        usrIDs = []
+        usrsinfo % 储存用户相关的信息，包括用户名、车票
     end
 
     % ========时间模拟系统==========
@@ -491,6 +491,13 @@ classdef TrainDispatch < handle
 
         % endregion
 
+        function output = findTrain(app, trainCode)
+            % 查询列车
+            output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
+        end
+
+        % region 订票相关API
+
         function output = findAvailableTickets(app, fromStation, toStation, level)
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             "当前两个站点的距离为"+fromStation.getDistance(toStation)
@@ -543,19 +550,93 @@ classdef TrainDispatch < handle
 
         end
 
-        function output = findTrain(app, trainCode)
-            % 查询列车
-            output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
+        function output = splitTrainCode(app, trainCode)
+            "将诸如'D22,D21'的字符串split成数组"
+            if ischar(trainCode)
+                trainCode=string(trainCode)
+            end
+            output = trainCode;
+
+            if contains(trainCode, ",")
+                output = strsplit(trains, ",");
+            end
+
         end
 
-        function output = bookTicket(app, trainCode, fromStation, toStation, level)
-            train = app.findTrain(trainCode);
-            tarin.bookTicket(fromStation, toStation, level);
+        function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime,usrName)
+            % 需要Station格式
+            trainCode = app.splitTrainCode(trainCode);
+
+            if length(trainCode) > 1
+                app.findTrain(trainCode(1)).bookTicketFrom(fromStation, level, number);
+
+                for i = 2:length(trainCode) - 1
+                    train = app.findTrain(trainCode(i));
+                    train.bookTicketAll(level, number);
+                end
+
+                app.findTrain(trainCode(end)).bookTicketTo(toStation, level, number); 
+
+            else
+                train = app.findTrain(trainCode);
+                train.bookTicket(fromStation, toStation, level, number);
+            end
+
+            app.debugApp.displaySeats();
+
+            if ~isempty(startTime)
+                ticket = struct();
+                ticket.trainCode = trainCode;
+                ticket.startStation = fromStation;
+                ticket.toStation = toStation;
+                ticket.startTime = startTime;
+                ticket.toTime = EndTime;
+                ticket.seatLevel = level;
+
+                app.recordTicket(usrName, ticket);
+            end
+
         end
 
         function output = requestAvailableSeats(app, trainCode, fromStation, toStation)
-            train = app.findTrain(trainCode);
-            output = train.requestAvailableSeats(fromStation, toStation);
+            trainCode = app.splitTrainCode(trainCode);
+
+            if length(trainCode) > 1
+                trains = strsplit(trainCode, ",");
+                firstTrain=trains(1);
+                remain =  app.requestAvailableSeats(firstTrain,fromStation,"");
+
+                for i = 2:length(trains)-1
+                    thetrain = trains(i);
+                    thisRemaining = app.requestAvailableSeats(thetrain,"","");
+                    remain(1) = min(remain(1), thisRemaining(1));
+                    remain(2) = min(remain(2), thisRemaining(2));
+                end
+                lastTrain=trains(end);
+                endreamin=app.requestAvailableSeats(lastTrain,"",toStation);
+                remain(1) = min(remain(1), endreamin(1));
+                remain(2) = min(remain(2), endreamin(2));
+
+                output = remain;
+
+            else
+                train = app.findTrain(trainCode);
+
+                if strcmp(fromStation,"") && ~strcmp(toStation,"")
+                    output = train.requestAvailableSeats(train.remainingStations(1), toStation);
+
+                elseif ~strcmp(fromStation,"") && strcmp(toStation,"")
+                    output = train.requestAvailableSeats(fromStation, train.remainingStations(end));
+
+                elseif strcmp(fromStation,"") && strcmp(toStation,"")
+                    output = train.requestAvailableSeats(train.remainingStations(1), train.remainingStations(end));
+
+                else
+                    output = train.requestAvailableSeats(fromStation, toStation);
+                end
+
+            end
+
         end
 
         function output = getPriceForTransferTrains(app, trains, fromStation, toStation)
@@ -572,6 +653,55 @@ classdef TrainDispatch < handle
 
         end
 
+        % endregion 订票相关API
+
+        % region 用户相关API
+
+        function output = findUsr(app, usrname)
+            "返回结构体数组中的对应用户结构体"
+            idx = find(strcmp(app.usrsinfo.usrName, usrname));
+
+            if isempty(idx)
+                output = [];
+            else
+                output = app.usrsinfo(idx);
+            end
+
+        end
+
+        function output = getRecentTicket(app, usrName)
+            usr = app.findUsr(usrName);
+            ticket = usr.ticket;
+
+            if isempty(ticket)
+                output = [];
+                return
+            end
+
+            earTIme = datetime("23:59:59");
+            earIndex = 0;
+            [row_num, ~] = size(app.myTickets);
+
+            for i = 1:row_num
+                ticket = app.myTickets(i, :);
+                time = datetime(ticket(4).stationName, 'Format', 'HH:mm');
+
+                if time < earTIme
+                    earTIme = time;
+                    earIndex = i;
+                end
+
+            end
+
+        end
+
+        function output = recordTicket(app, usrname, ticket)
+            usr = app.findUsr(usrname);
+            usr.ticket = [usr.ticket, ticket];
+
+        end
+
+        % endregion
     end
 
 end

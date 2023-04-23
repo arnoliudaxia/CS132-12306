@@ -257,6 +257,19 @@ classdef Train < handle
 
         end
 
+        function bookTicketFrom(app, fromStation, seatLevel, numberOfTickets)
+            "从该站一直book到终点站"
+            app.bookTicket(fromStation,app.remainingStations(end),seatLevel,numberOfTickets)
+        end
+        function bookTicketTo(app, toStation, seatLevel, numberOfTickets)
+            "从起始站一直book到该站"
+            app.bookTicket(app.remainingStations(1),toStation,seatLevel,numberOfTickets)
+        end
+        function bookTicketAll(app, toStation, seatLevel, numberOfTickets)
+            "一路book"
+            app.bookTicket(app.remainingStations(1),app.remainingStations(end),seatLevel,numberOfTickets)
+        end
+
         function output = requestAvailableSeats(app, fromStation, toStation)
             minVip = 100;
             minNPC = 100;
