@@ -551,19 +551,21 @@ classdef TrainDispatch < handle
         end
 
         function output = splitTrainCode(app, trainCode)
-            "将诸如'D22,D21'的字符串split成数组"
+            "将诸如'D22,D21'的字符串split成数组";
+
             if ischar(trainCode)
-                trainCode=string(trainCode)
+                trainCode = string(trainCode);
             end
+
             output = trainCode;
 
             if contains(trainCode, ",")
-                output = strsplit(trains, ",");
+                output = strsplit(trainCode, ",");
             end
 
         end
 
-        function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime,usrName)
+        function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime, usrName)
             % 需要Station格式
             trainCode = app.splitTrainCode(trainCode);
 
@@ -575,7 +577,7 @@ classdef TrainDispatch < handle
                     train.bookTicketAll(level, number);
                 end
 
-                app.findTrain(trainCode(end)).bookTicketTo(toStation, level, number); 
+                app.findTrain(trainCode(end)).bookTicketTo(toStation, level, number);
 
             else
                 train = app.findTrain(trainCode);
@@ -602,18 +604,19 @@ classdef TrainDispatch < handle
             trainCode = app.splitTrainCode(trainCode);
 
             if length(trainCode) > 1
-                trains = strsplit(trainCode, ",");
-                firstTrain=trains(1);
-                remain =  app.requestAvailableSeats(firstTrain,fromStation,"");
+                trains = trainCode;
+                firstTrain = trains(1);
+                remain = app.requestAvailableSeats(firstTrain, fromStation, "");
 
-                for i = 2:length(trains)-1
+                for i = 2:length(trains) - 1
                     thetrain = trains(i);
-                    thisRemaining = app.requestAvailableSeats(thetrain,"","");
+                    thisRemaining = app.requestAvailableSeats(thetrain, "", "");
                     remain(1) = min(remain(1), thisRemaining(1));
                     remain(2) = min(remain(2), thisRemaining(2));
                 end
-                lastTrain=trains(end);
-                endreamin=app.requestAvailableSeats(lastTrain,"",toStation);
+
+                lastTrain = trains(end);
+                endreamin = app.requestAvailableSeats(lastTrain, "", toStation);
                 remain(1) = min(remain(1), endreamin(1));
                 remain(2) = min(remain(2), endreamin(2));
 
@@ -622,13 +625,13 @@ classdef TrainDispatch < handle
             else
                 train = app.findTrain(trainCode);
 
-                if strcmp(fromStation,"") && ~strcmp(toStation,"")
+                if strcmp(fromStation, "") && ~strcmp(toStation, "")
                     output = train.requestAvailableSeats(train.remainingStations(1), toStation);
 
-                elseif ~strcmp(fromStation,"") && strcmp(toStation,"")
+                elseif ~strcmp(fromStation, "") && strcmp(toStation, "")
                     output = train.requestAvailableSeats(fromStation, train.remainingStations(end));
 
-                elseif strcmp(fromStation,"") && strcmp(toStation,"")
+                elseif strcmp(fromStation, "") && strcmp(toStation, "")
                     output = train.requestAvailableSeats(train.remainingStations(1), train.remainingStations(end));
 
                 else
@@ -669,15 +672,35 @@ classdef TrainDispatch < handle
 
         end
 
-        function output = getMyTickets(app,usrname)
+        function output = getMyTickets(app, usrname)
             usrIndex = app.findUsr(usrname);
             output = app.usrsinfo(usrIndex).ticket;
-        
-            
+        end
+
+        function cancelATicketByTrainCode(app, usrname, trainCode)
+            usrIndex = app.findUsr(usrName);
+            tickets = app.usrsinfo(usrIndex).ticket;
+
+            for i = 1:length(tickets)
+                ticket = tickets(i);
+
+                if ticket.trainCode == trainCode
+                    app.usrsinfo(usrIndex).ticket(i) = [];
+                    return
+                end
+
+            end
+
+        end
+
+        function cancelATicketByIndex(app, usrname, index)
+            usrIndex = app.findUsr(usrname);
+            app.usrsinfo(usrIndex).ticket(index) = [];
+
         end
 
         function output = getRecentTicket(app, usrName)
-                        usrIndex = app.findUsr(usrName);
+            usrIndex = app.findUsr(usrName);
             tickets = app.usrsinfo(usrIndex).ticket;
 
             if isempty(tickets)
@@ -698,7 +721,8 @@ classdef TrainDispatch < handle
                 end
 
             end
-            output=tickets(earIndex);
+
+            output = tickets(earIndex);
 
         end
 
