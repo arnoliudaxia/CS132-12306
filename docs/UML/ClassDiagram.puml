@@ -1,0 +1,102 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class TrainDispatch{
+datetime SysTime
+List<Station> Stations
+List<Train> Trains
+string[] usrIDs;
+
+
+void changeSysTime(deltaTime)
+string findAvailableTickets(fromStation,toStation,level)
+void bookTicket(trainCode,fromStation,toStation,level)
+Train findTrain(trainCode)
+int[] requestAvailableSeats(trainCode,fromStation, toStation)
+
+}
+
+class Train{
+ string trainCode
+ trainStatus status
+ List<Station> remainingStations
+ int lineType
+ bool lineDirection
+ bool DorG
+ int PassType
+
+ void updateTrainStatus()
+ bool findPasswayStation(queryStation)
+ bool findPasswayStationWithoutTime(queryStation)
+ bool findPasswayStationAfterStation(queryStation,filterStation)
+ datetime getStationDepartureTime(queryStation)
+ void bookTicket(fromStation,toStation,seatLevel)
+int[] requestAvailableSeats(app,fromStation, toStation)
+
+}
+
+class Station{
+    string stationName
+    datetime arrivalTime
+    datetime departureTime
+ int[] remainingSeats
+
+
+    int getDistance(other)
+    bool isSameSide(other)
+}
+
+TrainDispatch *-- Train
+TrainDispatch *-- Station
+
+
+Station ..* Train
+
+
+
+enum trainStatus{
+    NOTSTARTED
+    RUNNING
+    STOPPED
+}
+
+Train *-- trainStatus
+
+interface matlabAPP{
+
+}
+
+class debugApp{
+    void display_update_systime()
+    void updateTrainUI()
+}
+TrainDispatch *-- debugApp
+matlabAPP *.. debugApp
+
+class mainApp{
+    +trainDispatch
+    +debugApp
+    int level2Book
+    int[2] remainingSeats
+    string usrID
+    ArrayList myTickets
+    usrStatus UsrStatus;
+
+    -void showTickets()
+    -void writeTicketPanel(...)
+    -void refreshSeatOccupyUI()
+    string searchTrains()
+    void bookTicketCommon(...)
+}
+enum usrStatus{
+    IDLE
+    ONBOARD
+}
+mainApp *-- usrStatus
+TrainDispatch *-- mainApp
+matlabAPP *.. mainApp
+
+
+
+
+@enduml

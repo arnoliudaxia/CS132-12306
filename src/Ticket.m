@@ -1,11 +1,10 @@
-classdef Ticket<handle
+classdef Ticket
     %TICKET 此处显示有关此类的摘要
     %   此处显示详细说明
     
     properties
-        ticketTrain
-        isOcupied
-        bookPassanger
+        trainSeq=[]
+        % bookPassanger
         fromStation
         toStation
     end
