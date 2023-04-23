@@ -661,8 +661,12 @@ classdef TrainDispatch < handle
         % region 用户相关API
 
         function output = findUsr(app, usrname)
-            "返回结构体数组中的对应用户结构体的缩影"
-            idx = find(strcmp(app.usrsinfo.usrName, usrname));
+            % "返回结构体数组中的对应用户结构体的缩影"
+            for i=1:length(app.usrsinfo)
+                if strcmp(app.usrsinfo(i).usrName, usrname)
+                    idx=i;
+                end
+            end
 
             if isempty(idx)
                 output = -1;
@@ -695,6 +699,8 @@ classdef TrainDispatch < handle
 
         function cancelATicketByIndex(app, usrname, index)
             usrIndex = app.findUsr(usrname);
+            ticket=app.usrsinfo(usrIndex).ticket(index);
+            app.bookTicket(ticket.trainCode, ticket.startStation, ticket.toStation, ticket.seatLevel, -1, ticket.startTime, ticket.toTime, usrname)
             app.usrsinfo(usrIndex).ticket(index) = [];
 
         end
