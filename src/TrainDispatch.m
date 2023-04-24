@@ -66,6 +66,7 @@ classdef TrainDispatch < handle
                         app.usrsinfo(i).usrStatus="IDLE";
                         % 顺便销票
                         app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
+                        
                     end
                 end
 
@@ -79,6 +80,8 @@ classdef TrainDispatch < handle
                         if app.SysTime<recentTicket.startTime
                             "没上车给爷滚蛋"
                             app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
+                            app.client(i).getTrainBtn.Enable=false;
+
                         end
 
                     end

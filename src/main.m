@@ -24,3 +24,7 @@ mainapp.debugApp=debugUI;
 debugUI.trainDispatch=trainDispath;
 debugUI.display_update_systime();
 debugUI.displaySeatTrain=trainDispath.Trains(2);
+% 自动化测试
+autoTest=AutoTest();
+autoTest.trainDispatch=trainDispath;
+autoTest.Test();
