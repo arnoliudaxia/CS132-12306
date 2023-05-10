@@ -6,6 +6,8 @@ classdef TestAPI < handle & matlab.uitest.TestCase
         usr3
         trainDispath
         debugApp
+
+        orderRecord={}
     end
 
     methods (TestMethodSetup)
@@ -139,9 +141,22 @@ classdef TestAPI < handle & matlab.uitest.TestCase
             startStation = tc.stationIDtoStation(depStationID);
             toStation = tc.stationIDtoStation(arrStationID);
             temptime = datetime("01:00:00");
+            passanger=tc.passengerName(passengerID);
 
-            tc.trainDispath.bookTicket(trainCode, startStation, toStation, 2, 1, temptime, temptime, tc.passengerName(passengerID))
+            ticketinfo=struct();
+            index=tc.trainDispath.bookTicket(trainCode, startStation, toStation, 2, 1, temptime, temptime, passanger);
+            ticketinfo.usrname=passanger;
+            ticketinfo.trainCode=trainCode;
+            orderID=ticketinfo;
 
+        end
+        function refund(tc,orderID)
+            % cancel a ticket according to orderID you generate
+            % no illegal input will occur
+            % no endorse function, because it can be realized by refund then buyTicket
+
+
+            tc.trainDispath.cancelATicketByTrainCode(orderID.usrname,orderID.trainCode)
         end
 
     end

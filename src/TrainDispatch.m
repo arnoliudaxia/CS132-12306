@@ -666,7 +666,7 @@ classdef TrainDispatch < handle
                 ticket.toTime = EndTime;
                 ticket.seatLevel = level;
 
-                app.recordTicket(usrName, ticket);
+                output=app.recordTicket(usrName, ticket); %返回票在堆栈里的索引
             end
 
         end
@@ -752,7 +752,8 @@ classdef TrainDispatch < handle
             output = app.usrsinfo(usrIndex).ticket;
         end
 
-        function cancelATicketByTrainCode(app, usrname, trainCode)
+        function cancelATicketByTrainCode(app, usrName, trainCode)
+            "用户"+usrName+"取消"+trainCode
             usrIndex = app.findUsr(usrName);
             tickets = app.usrsinfo(usrIndex).ticket;
 
@@ -760,6 +761,7 @@ classdef TrainDispatch < handle
                 ticket = tickets(i);
 
                 if ticket.trainCode == trainCode
+                    app.bookTicket(ticket.trainCode, ticket.startStation, ticket.toStation, 2, -1, ticket.startTime, ticket.toTime, usrName);
                     app.usrsinfo(usrIndex).ticket(i) = [];
                     return
                 end
@@ -806,7 +808,8 @@ classdef TrainDispatch < handle
         function output = recordTicket(app, usrname, ticket)
             usrIndex = app.findUsr(usrname);
             app.usrsinfo(usrIndex).ticket = [app.usrsinfo(usrIndex).ticket, ticket];
-
+            % 返回当前票的索引
+            output=length(app.usrsinfo(usrIndex).ticket)
         end
 
         function onBoard(app,usrname)

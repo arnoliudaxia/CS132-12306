@@ -31,8 +31,18 @@ debugUI.displaySeatTrain=trainDispath.Trains(2);
 % autoTest.trainDispatch=trainDispath;
 % autoTest.Test();
 
+% well,你可以先试一试从常州北到杭州东，看看路线齐不齐全
 testAPI=TestAPI();
 testAPI.usr1=usr1;
 testAPI.trainDispath=trainDispath;
-testAPI.findAvaTransferTicket(3,5)
-testAPI.buyTicket(1,"223",4,3)
+testAPI.debugApp=debugUI;
+
+id=testAPI.buyTicket(1,"223",4,3)
+pause(15)
+testAPI.refund(id)
+
+
+% testAPI.setTime(10,50);
+% testAPI.findAvaTransferTicket(3,5)
+% testAPI.setTime(12,20);
+% testAPI.findAvaNonstopTicket(1,6)
