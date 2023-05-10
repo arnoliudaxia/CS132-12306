@@ -13,7 +13,7 @@ classdef TrainDispatch < handle
         debugApp
         usrsinfo % 储存用户相关的信息，包括用户名、车票
         client=[]
-        deltaTimePerFrame=5;
+        deltaTimePerFrame=1;
     end
 
     % ========时间模拟系统==========
@@ -107,7 +107,7 @@ classdef TrainDispatch < handle
             obj.SysTime = datetime('09:40:00');
             obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
 
-            obj.SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 2, 'TimerFcn', @obj.update_sys_time);
+            obj.SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 0.2, 'TimerFcn', @obj.update_sys_time);
             % init stations
             nanjingS = Station("南京南");
             changzhouN = Station("常州北");
@@ -563,6 +563,11 @@ classdef TrainDispatch < handle
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             "当前两个站点的距离为"+fromStation.getDistance(toStation)
             output = "";
+            if level>1
+                "转乘超过两站"
+                return
+            end
+            
             % 第一次（level=0）的时候把出发时间延后5分钟
             if level == 0
                 fromStation.departureTime=fromStation.departureTime+minutes(5);
@@ -583,7 +588,7 @@ classdef TrainDispatch < handle
                     % 看一看是否离终点更远了
                     if train.remainingStations(end).getDistance(toStation) > fromStation.getDistance(toStation)
                         % "乘坐"+train.trainCode + "到终点站会更远"
-                        continue;
+                        % continue;
                     end
 
                     nextSeq = app.findAvailableTickets(train.remainingStations(end), toStation, level + 1);
@@ -661,7 +666,7 @@ classdef TrainDispatch < handle
                 ticket.toTime = EndTime;
                 ticket.seatLevel = level;
 
-                app.recordTicket(usrName, ticket);
+                output=app.recordTicket(usrName, ticket); %返回票在堆栈里的索引
             end
 
         end
@@ -747,7 +752,8 @@ classdef TrainDispatch < handle
             output = app.usrsinfo(usrIndex).ticket;
         end
 
-        function cancelATicketByTrainCode(app, usrname, trainCode)
+        function cancelATicketByTrainCode(app, usrName, trainCode)
+            "用户"+usrName+"取消"+trainCode
             usrIndex = app.findUsr(usrName);
             tickets = app.usrsinfo(usrIndex).ticket;
 
@@ -755,6 +761,7 @@ classdef TrainDispatch < handle
                 ticket = tickets(i);
 
                 if ticket.trainCode == trainCode
+                    app.bookTicket(ticket.trainCode, ticket.startStation, ticket.toStation, 2, -1, ticket.startTime, ticket.toTime, usrName);
                     app.usrsinfo(usrIndex).ticket(i) = [];
                     return
                 end
@@ -801,7 +808,8 @@ classdef TrainDispatch < handle
         function output = recordTicket(app, usrname, ticket)
             usrIndex = app.findUsr(usrname);
             app.usrsinfo(usrIndex).ticket = [app.usrsinfo(usrIndex).ticket, ticket];
-
+            % 返回当前票的索引
+            output=length(app.usrsinfo(usrIndex).ticket)
         end
 
         function onBoard(app,usrname)
