@@ -13,7 +13,7 @@ classdef TrainDispatch < handle
         debugApp
         usrsinfo % 储存用户相关的信息，包括用户名、车票
         client=[]
-        deltaTimePerFrame=5;
+        deltaTimePerFrame=1;
     end
 
     % ========时间模拟系统==========
@@ -107,7 +107,7 @@ classdef TrainDispatch < handle
             obj.SysTime = datetime('09:40:00');
             obj.SysTimeDisplay = datestr(obj.SysTime, 'HH:MM'); % 转换为字符串格式
 
-            obj.SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 2, 'TimerFcn', @obj.update_sys_time);
+            obj.SysTimeCron = timer('ExecutionMode', 'fixedRate', 'Period', 0.2, 'TimerFcn', @obj.update_sys_time);
             % init stations
             nanjingS = Station("南京南");
             changzhouN = Station("常州北");
