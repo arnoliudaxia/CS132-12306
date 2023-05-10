@@ -5,6 +5,7 @@ classdef TestAPI < handle & matlab.uitest.TestCase
         usr2
         usr3
         trainDispath
+        debugApp
     end
 
     methods (TestMethodSetup)
@@ -68,13 +69,29 @@ classdef TestAPI < handle & matlab.uitest.TestCase
     end
 
     methods (Access = public)
+        function setTime(tc,hour,minute)
+            % your software should have a system time, which can flow itself by timer and be easy to control and modify
+            % when we set the time, system should accelerate to target time rather than jumping to target time.
+            % when testing, time should be paused in default, time will only flow when we call this function.
+            % when testing, illegal input will be avoided, time won't trace back.
+            targetTime=datetime(hour+":"+minute+":00");
+            disp("WARNNING: 注意当前版本调整时间的最小分度值是5分钟")
+            while tc.trainDispath.SysTime<targetTime
+                tc.trainDispath.changeSysTime(minutes(1));
+                tc.debugApp.updateTrainUI();
+                pause(0.1);
+            end
+
+
+        
+        end
 
         function trainNumberList = findAvaTransferTicket(app, depStationID, arrStationID)
             % return list of transfer train-pairs whose time and seat is available.
             % only when depStation and arrStation are on different lines do we need transfer.
             % return in order of departure time of first train (then second train)
             % For example, searching Huzhou-Jiaxing at 10:50 will return
-            % trainNumberList = {222,215;223,218;224,217}   n × 2 cell array
+            % trainNumberList = {222,215;223,218}   n × 2 cell array
             % if no available train-pair, return {} 0x0 empty cell array
             startStation = app.stationIDtoStation(depStationID);
             startStation.arrivalTime = app.trainDispath.SysTime;
