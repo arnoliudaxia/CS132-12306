@@ -563,6 +563,11 @@ classdef TrainDispatch < handle
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             "当前两个站点的距离为"+fromStation.getDistance(toStation)
             output = "";
+            if level>1
+                "转乘超过两站"
+                return
+            end
+            
             % 第一次（level=0）的时候把出发时间延后5分钟
             if level == 0
                 fromStation.departureTime=fromStation.departureTime+minutes(5);
@@ -583,7 +588,7 @@ classdef TrainDispatch < handle
                     % 看一看是否离终点更远了
                     if train.remainingStations(end).getDistance(toStation) > fromStation.getDistance(toStation)
                         % "乘坐"+train.trainCode + "到终点站会更远"
-                        continue;
+                        % continue;
                     end
 
                     nextSeq = app.findAvailableTickets(train.remainingStations(end), toStation, level + 1);
