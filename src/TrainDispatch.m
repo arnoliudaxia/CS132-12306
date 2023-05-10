@@ -131,7 +131,7 @@ classdef TrainDispatch < handle
             d21_liyang.arrivalTime = datetime('11:00:00');
             d21_liyang.departureTime = datetime('11:03:00');
             d21_nanjingS = nanjingS;
-            d21_nanjingS.arrivalTime = datetime('12:30:00');
+            d21_nanjingS.arrivalTime = datetime('11:30:00');
             % endregion
             D21 = Train("D21", [d21_hangzhou, d21_huzhou, d21_liyang, d21_nanjingS], 1);
             D21.lineDirection = 1;
@@ -176,7 +176,7 @@ classdef TrainDispatch < handle
             d22_huzhou.arrivalTime = datetime('11:00:00');
             d22_huzhou.departureTime = datetime('11:03:00');
             d22_hangzhou = hangzhouE;
-            d22_hangzhou.arrivalTime = datetime('12:30:00');
+            d22_hangzhou.arrivalTime = datetime('11:30:00');
             % endregion
             D22 = Train("D22", [d22_nanjingS, d22_liyang, d22_huzhou, d22_hangzhou], 1);
             D22.lineDirection = 0;
@@ -295,7 +295,7 @@ classdef TrainDispatch < handle
             D13_changzhouN.arrivalTime = datetime('12:00:00');
             D13_changzhouN.departureTime = datetime('12:03:00');
             D13_nanjingS = nanjingS;
-            D13_nanjingS.arrivalTime = datetime('13:30:00');
+            D13_nanjingS.arrivalTime = datetime('12:30:00');
             D13 = Train("D13", [D13_hangzhouE, D13_jiaxingS, D13_shanghaiHQ, D13_suzhouN, D13_changzhouN, D13_nanjingS], 2);
             D13.lineDirection = 0;
             % endregion
@@ -370,7 +370,7 @@ classdef TrainDispatch < handle
             D14_jiaxingS.arrivalTime = datetime('12:00:00');
             D14_jiaxingS.departureTime = datetime('12:03:00');
             D14_hangzhouE = hangzhouE;
-            D14_hangzhouE.arrivalTime = datetime('13:30:00');
+            D14_hangzhouE.arrivalTime = datetime('12:30:00');
             D14 = Train("D14", [D14_nanjingS, D14_changzhouN, D14_suzhouN, D14_shanghaiHQ, D14_jiaxingS, D14_hangzhouE], 2);
             D14.lineDirection = 1;
             % endregion
@@ -563,6 +563,10 @@ classdef TrainDispatch < handle
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             "当前两个站点的距离为"+fromStation.getDistance(toStation)
             output = "";
+            % 第一次（level=0）的时候把出发时间延后5分钟
+            if level == 0
+                fromStation.departureTime=fromStation.departureTime+minutes(5);
+            end
             % 注意这里的fromStation必须包含arrivalTime，toStation必须包含arrivalTime，代表了客户到站的时间
             % 问每一辆车车会不会经过呢
             passedTrains = app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
@@ -628,6 +632,7 @@ classdef TrainDispatch < handle
 
         function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime, usrName)
             % 需要Station格式
+            disp("乘客"+usrName+"订购"+trainCode+"从"+fromStation.stationName+"到"+toStation.stationName+"的"+number+"张"+level+"级座位")
             trainCode = app.splitTrainCode(trainCode);
 
             if length(trainCode) > 1

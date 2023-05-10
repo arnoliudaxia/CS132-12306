@@ -150,7 +150,8 @@ classdef Train < handle
 
                 if strcmp(station.stationName, queryStation.stationName) && ~isempty(station.departureTime)
                     %同一个站点而且车车必须要开不能使终点站
-                    if (station.departureTime - minutes(5)) > queryStation.arrivalTime
+                    % 由于转乘不受到5分钟的限制，所以这里不再check5分钟的限制，而是把第一次上车的时间直接推后5分钟
+                    if (station.departureTime) > queryStation.arrivalTime
                         % 开车前5min停止购票
                         output = 1;
                     end
