@@ -74,7 +74,7 @@ classdef TestAPI < handle & matlab.uitest.TestCase
             % only when depStation and arrStation are on different lines do we need transfer.
             % return in order of departure time of first train (then second train)
             % For example, searching Huzhou-Jiaxing at 10:50 will return
-            % trainNumberList = {222,215;222,217;223,218;224,217}   n × 2 cell array
+            % trainNumberList = {222,215;223,218;224,217}   n × 2 cell array
             % if no available train-pair, return {} 0x0 empty cell array
             startStation = app.stationIDtoStation(depStationID);
             startStation.arrivalTime = app.trainDispath.SysTime;
@@ -86,6 +86,30 @@ classdef TestAPI < handle & matlab.uitest.TestCase
             tickets = strsplit(SearchedTickets, "-");
             trainNumberList = tickets(1:end - 1)
 
+        end
+
+        function trainNumberList = findAvaNonstopTicket(tc,depStationID, arrStationID)
+            % return list of nonstop trains whose time and seat is available.
+          % return in order of departure time
+          % For example, searching Nanjing-Shanghai at 12:20 will return
+          % trainNumberList = {114,218,116}   1 × n cell array
+          % if no available train, return {} 0x0 empty cell array
+
+            %   为了简单起见，直接调用findAvaTransferTicket，然后过滤结果
+            trainNumberList=tc.findAvaTransferTicket(depStationID, arrStationID);
+            if trainNumberList.length>=1
+                result=[];
+                for i=1:trainNumberList.length
+                    trains=trainNumberList(i);
+                    if ~contains(trains, ',')
+                        "直达列车";
+                        result=[result trains]
+                    end
+
+                end
+                trainNumberList=result;
+            end
+        
         end
 
         function orderID = buyTicket(tc, passengerID, trainID, depStationID, arrStationID)
