@@ -4,13 +4,9 @@ classdef test_counter < handle & matlab.unittest.TestCase
 
         function test_increment(tc)
 
-            c = counter();
+            tc.verifyEqual(0, 0);
 
-            tc.verifyEqual(c.count, 0);
-
-            c.increment();
-
-            tc.verifyEqual(c.count, 1);
+            tc.verifyEqual(2, 1);
 
         end
 

@@ -319,7 +319,7 @@ classdef Train < handle
                 output = 4;
             else
                 "动车，一站一元,直接考虑剩下多少沾点"
-                output = length(remainingStations);
+                output = length(app.remainingStations);
             end
 
         end
