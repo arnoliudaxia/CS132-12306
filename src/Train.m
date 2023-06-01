@@ -10,7 +10,7 @@ classdef Train < handle
         lineType %两条线路，短的是1，长的是2
         lineDirection %从上到下是0，反过来是1
         DorG %动车还是高铁（直达还是经停）
-        PassType %根据通过站点对所有列车分类
+        PassType %线路完全一样的分为一类
     end
 
     methods (Access = private)
@@ -140,9 +140,9 @@ classdef Train < handle
 
         end
 
+        % 判断这俩车车是否会经过queryStation站点（包括时间点信息，所以queryStation需要包含arrivalTime）
+        % 返回值 为1或者0，1代表会经过，0代表不会经过
         function output = findPasswayStation(app, queryStation)
-            % 判断这俩车车是否会经过该站点（包括时间点信息，所以queryStation需要包含arrivalTime）
-            % output为0代表不经过，为1代表经过
             output = 0;
 
             for i = 1:length(app.remainingStations)
@@ -150,9 +150,7 @@ classdef Train < handle
 
                 if strcmp(station.stationName, queryStation.stationName) && ~isempty(station.departureTime)
                     %同一个站点而且车车必须要开不能使终点站
-                    % 由于转乘不受到5分钟的限制，所以这里不再check5分钟的限制，而是把第一次上车的时间直接推后5分钟
                     if (station.departureTime) > queryStation.arrivalTime
-                        % 开车前5min停止购票
                         output = 1;
                     end
 
@@ -162,7 +160,9 @@ classdef Train < handle
 
         end
 
+        % (弃用)
         function output = findPasswayStationWithoutTime(app, queryStation)
+            "WARNING 你正在调用一个弃用的API Train.findPasswayStationWithoutTime()"
             % 只看会不会经过，其他一概不考虑
             output = 0;
 
