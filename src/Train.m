@@ -313,7 +313,24 @@ classdef Train < handle
                 output = 4;
             else
                 % "动车，一站一元"
-                output = station1.getDistance(station2);
+                output = 0;
+                flag = true;
+
+                for i = 1:length(app.remainingStations)
+                    station = app.remainingStations(i);
+                    if flag && strcmp(station.stationName, station1.stationName)
+                        flag = false;
+                        continue;
+                    end
+                    if ~flag
+                        output = output + 1;
+                        if strcmp(station.stationName, station2.stationName)
+                            break;
+                        end
+
+                    end
+
+                end
             end
 
         end
@@ -339,7 +356,7 @@ classdef Train < handle
                 output = 4;
             else
                 "动车，一站一元"
-                output = station.getDistance(app.remainingStations(1));
+                output = app.getPrice(app.remainingStations(1), station);
             end
 
         end
