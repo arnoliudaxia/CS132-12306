@@ -30,9 +30,14 @@ classdef TrainDispatch < handle
 
         end
 
+        % （弃用）
+        % 现在考虑如果前面的车没有座位了要让后面的补上
+        % 因为很多车次线路完全一样，所以能乘前面的车次就不用乘后面的
         function output = GetEariestTrain(app, trainList)
+            "WARNING 你正在调用一个弃用的API TrainDispatch.GetEariestTrain()"
             % 返回一个最早的动车或者高铁
             % 因为是顺序查找，所以第一个D和G就是最早的，选他们就对
+            % 除了上面说的外，还要考虑是否有座
             FoundType = [];
             output = [];
 
@@ -559,63 +564,57 @@ classdef TrainDispatch < handle
 
         % region 订票相关API
 
-        function output = findAvailableTickets(app, fromStation, toStation, level)
+        % 查票函数
+        % fromStation, toStation是Station对象
+        % level 是递归层数量，外部调用一律给0
+        % 返回值是一个struct, output.direct包含了所有直达车组成的list；output.transfer包含了所有非直达车组成的cell，其中每个元素是一个list
+        function output = findAvailableTickets(app, fromStation, toStation,level)
             "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
-            "当前两个站点的距离为"+fromStation.getDistance(toStation)
-            output = "";
+            % "当前两个站点的距离为"+fromStation.getDistance(toStation)
+            output = struct();
+            output.direct=[];
+            output.transfer={};
+            FoundType = []; %存储同路线的班车
             if level>1
-                "转乘超过两站"
-                return
+                return;
             end
-            
-            % 第一次（level=0）的时候把出发时间延后5分钟
-            if level == 0
-                fromStation.departureTime=fromStation.departureTime+minutes(5);
-            end
-            % 注意这里的fromStation必须包含arrivalTime，toStation必须包含arrivalTime，代表了客户到站的时间
-            % 问每一辆车车会不会经过呢
+
+
+            % 发车前五分钟停止售票，所以把用户的查询时间推迟5分钟
+            fromStation.departureTime=fromStation.departureTime+minutes(5);
+            % 先找一下我能上什么车
             passedTrains = app.filterActiveTrains(@(train) train.findPasswayStation(fromStation));
-            % 不用故意错过列车
-            shouldTake = app.GetEariestTrain(passedTrains);
-
-            for i = 1:length(shouldTake)
-                train = shouldTake(i);
-                % 判断当前列车是否可以直达终点站
-
-                if ~train.findPasswayStationAfterStation(toStation, fromStation)
-                    "很可惜"+train.trainCode + "不能乘到"
-                    % 假设乘坐该列车到终点站
-                    % 看一看是否离终点更远了
-                    if train.remainingStations(end).getDistance(toStation) > fromStation.getDistance(toStation)
-                        % "乘坐"+train.trainCode + "到终点站会更远"
-                        % continue;
-                    end
-
-                    nextSeq = app.findAvailableTickets(train.remainingStations(end), toStation, level + 1);
-
-                    if ~strcmp(nextSeq, "")
-                        %找到合适的线路了
-                        if level == 0
-                            "你可以先乘坐"+train.trainCode + "到"+train.remainingStations(end).stationName
-                            "然后乘坐"+nextSeq + "到达"
-                        end
-
-                        output = output + train.trainCode + ","+nextSeq
-                    end
-
-                else
-
-                    if level == 0
-                        "可以乘坐"+train.trainCode + "直达"
-                    end
-
-                    output = output + ""+train.trainCode + "-"
+            % 假设我上每一辆车，如果乘到toStation就马上停下，否则乘到终点站
+            for i = 1:length(passedTrains)
+                train = passedTrains(i);
+                % 同一路线的已经乘坐过了
+                if app.isEleInList(FoundType,train.PassType)
+                    continue;
                 end
 
+                % 看一看能不能直接乘到
+                if train.findPasswayStationAfterStation(toStation, fromStation)
+                    output.direct = [output.direct, train];
+                    FoundType = [FoundType, train.PassType];
+                
+                elseif level==0&&train.findPasswayStationAfterStation(train.remainingStations(end), fromStation)
+                    % 直接做到终点站
+                    FoundType = [FoundType, train.PassType];
+                    nextRoute=app.findAvailableTickets(train.remainingStations(end), toStation,level+1);
+                    if ~isempty(nextRoute.direct)
+                        for j=1:length(nextRoute.direct)
+                            output.transfer = {output.transfer; [train, nextRoute.direct(j)]};
+                        end
+                        
+                    end
+                
+                end
+
+
             end
 
-            if level == 0
-                output = output()
+            if ~isempty(output.transfer)
+                output.transfer=output.transfer{2:end};
             end
 
         end
