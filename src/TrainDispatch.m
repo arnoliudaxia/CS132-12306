@@ -738,6 +738,10 @@ classdef TrainDispatch < handle
 
         % region 用户相关API
 
+        function addUsr(app,name)
+            app.usrsinfo=[app.usrsinfo,struct("usrName",name,"usrStatus","IDLE","ticket",[])];
+        end
+
         function output = findUsr(app, usrname)
             % "返回结构体数组中的对应用户结构体的缩影"
             for i=1:length(app.usrsinfo)
