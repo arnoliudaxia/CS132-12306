@@ -3,7 +3,7 @@ classdef Train < handle
     %   此处显示详细说明
 
     properties
-        trainCode
+        trainCode %火车代号，例如"D21"，一个字符串
         passangers
         remainingStations = []
         status %'NOTSTARTED','RUNNING', 'STOP'
@@ -303,34 +303,36 @@ classdef Train < handle
 
         end
 
+    % region 价格API
+
+        % "只考虑直达情况下从s1到s2的价格"
         function output = getPrice(app, station1, station2)
-            "只考虑直达情况下从s1到s2的价格"
 
             if app.DorG == 2
-                "高铁,一律4元"
+                % "高铁,一律4元"
                 output = 4;
             else
-                "动车，一站一元"
+                % "动车，一站一元"
                 output = station1.getDistance(station2);
             end
 
         end
 
+        % "只考虑非直达情况下从s1乘到终点站的价格"
         function output = getPriceForNonDirect(app)
-            "只考虑非直达情况下从s1乘到终点站的价格"
 
             if app.DorG == 2
-                "高铁,一律4元"
+                % "高铁,一律4元"
                 output = 4;
             else
-                "动车，一站一元,直接考虑剩下多少沾点"
+                % "动车，一站一元,直接考虑剩下多少站点"
                 output = length(app.remainingStations);
             end
 
         end
 
+        % 从现在开到station的价格
         function output = getPriceToStaion(app, station)
-            "只考虑直达情况下从s1到s2的价格"
 
             if app.DorG == 2
                 "高铁,一律4元"
@@ -342,6 +344,13 @@ classdef Train < handle
 
         end
 
+
+    % endregion
+
+
     end
+
+
+
 
 end
