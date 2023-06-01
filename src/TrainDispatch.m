@@ -570,7 +570,7 @@ classdef TrainDispatch < handle
 % endregion
 
 
-        % region 订票相关API
+    % region 订票相关API
 
         % 查票函数
         % fromStation, toStation是Station对象
@@ -716,17 +716,21 @@ classdef TrainDispatch < handle
 
         end
 
+        % "计算含有转乘的票价"
+        % 参数
+        % trains: 列车数组
+        % fromStation: 起始站
+        % toStation：终点站
+        % 返回值：int：价格
         function output = getPriceForTransferTrains(app, trains, fromStation, toStation)
-            "计算含有转乘的票价"
             output = 0;
-            "先计算除了最后一个车从from到最后的价格"
-
+            % "先计算除了最后一个车从from到最后的价格"
             for i = 1:length(trains) - 1
-                output = output + app.findTrain(trains(i)).getPriceForNonDirect();
+                output = output + trains(i).getPriceForNonDirect();
             end
 
-            "然后获取最后一个转乘车的价格"
-            output = output + app.findTrain(trains(end)).getPriceToStaion(toStation);
+            % "然后获取最后一个转乘车的价格"
+            output = output + trains(end).getPriceToStaion(toStation);
 
         end
 
