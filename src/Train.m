@@ -205,22 +205,27 @@ classdef Train < handle
 
         end
 
+        % 判断这俩车车是否会经过filterStation后到达queryStation（queryStation需要包含arrivalTime）
+        % 注意如果沿途发现没有作为会立刻打断
+        % 返回值 output为0代表不经过，为1代表经过
         function output = findPasswayStationAfterStation(app, queryStation, filterStation)
-            % 判断这俩车车是否会经过该站点（包括时间点信息，所以queryStation需要包含arrivalTime）
-            % output为0代表不经过，为1代表经过
             output = 0;
             flag = true;
 
             for i = 1:length(app.remainingStations)
                 station = app.remainingStations(i);
 
-                if strcmp(station.stationName, filterStation.stationName) && flag
+                if station.remainingSeats(2)==0
+                    break;
+                end
+
+                if flag && strcmp(station.stationName, filterStation.stationName)
                     flag = false;
                 end
 
                 if ~flag && strcmp(station.stationName, queryStation.stationName)
                     output = 1;
-
+                    break;
                 end
 
             end
