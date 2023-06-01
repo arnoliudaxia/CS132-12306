@@ -11,7 +11,7 @@ classdef TrainDispatch < handle
         Trains = []
         Stations = []
         debugApp
-        usrsinfo % 储存用户相关的信息，包括用户名、车票
+        usrsinfo=[] % 储存用户相关的信息，包括用户名、车票
         client=[]
         deltaTimePerFrame=1;
     end
@@ -106,6 +106,7 @@ classdef TrainDispatch < handle
 
     methods (Access = public)
 
+        % 在构造函数中，初始化所有的车站和列车，初始化时间系统
         function obj = TrainDispatch()
             "建立火车调度中心"
             "模拟时间系统启动"
@@ -487,6 +488,7 @@ classdef TrainDispatch < handle
                               G12, G14, G16];
 
         end
+% region 时间系统API
 
         function update_sys_time(Obj, ~, ~)
             % "更新时间"
@@ -514,9 +516,8 @@ classdef TrainDispatch < handle
             else
                 stop(app.SysTimeCron);
             end
-            
-            
         end
+% endregion
 
 % region 列车相关API
 

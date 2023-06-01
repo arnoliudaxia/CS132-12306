@@ -101,7 +101,7 @@ classdef Train < handle
                 obj.DorG = 2;
             end
 
-            obj.PassType = obj.passType(code)
+            obj.PassType = obj.passType(code);
 
         end
 
