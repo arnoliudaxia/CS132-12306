@@ -16,7 +16,9 @@ classdef Station
             obj.stationName = name;
         end
 
+        % (弃用)
         function output = getDistance(app, other)
+            "WARNING 你正在调用一个弃用的API Station.getDistance()"
             stationMap = ["南京南", "常州北", "苏州北", "上海虹桥", "嘉兴南", "杭州东", "湖州", "溧阳"];
             index1 = find(stationMap == app.stationName);
             index2 = find(stationMap == other.stationName);
