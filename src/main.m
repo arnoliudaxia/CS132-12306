@@ -32,14 +32,14 @@ debugUI.displaySeatTrain=trainDispath.Trains(2);
 % autoTest.Test();
 
 % well,你可以先试一试从常州北到杭州东，看看路线齐不齐全
-testAPI=TestAPI();
-testAPI.usr1=usr1;
-testAPI.trainDispath=trainDispath;
-testAPI.debugApp=debugUI;
+% testAPI=TestAPI();
+% testAPI.usr1=usr1;
+% testAPI.trainDispath=trainDispath;
+% testAPI.debugApp=debugUI;
 
-id=testAPI.buyTicket(1,"223",4,3)
-pause(15)
-testAPI.refund(id)
+% id=testAPI.buyTicket(1,"223",4,3)
+% pause(15)
+% testAPI.refund(id)
 
 
 % testAPI.setTime(10,50);
