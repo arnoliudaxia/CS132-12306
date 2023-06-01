@@ -27,9 +27,12 @@ classdef Station
             output = min(d1, d2);
         end
 
+        % 线路图可以分为两线，长线和短线，该函数判断给定的两个站点是否是同一条线上的
+        % 用法：fromStation.isSameSide(toStation) 
+        % 返回值为true或false
         function output = isSameSide(app, other)
 
-            if strcmp(other.stationName == "南京南") || strcmp(other.stationName == "杭州东") || strcmp(app.stationName == "南京南") || strcmp(app.stationName == "杭州东")
+            if strcmp(other.stationName,"南京南") || strcmp(other.stationName , "杭州东") || strcmp(app.stationName , "南京南") || strcmp(app.stationName , "杭州东")
                 output = true;
             else
                 stationMap_shortSide = ["湖州", "溧阳"];
