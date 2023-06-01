@@ -611,7 +611,7 @@ classdef TrainDispatch < handle
                     nextRoute=app.findAvailableTickets(train.remainingStations(end), toStation,level+1);
                     if ~isempty(nextRoute.direct)
                         for j=1:length(nextRoute.direct)
-                            output.transfer = {output.transfer; [train, nextRoute.direct(j)]};
+                            output.transfer = [output.transfer; {[train, nextRoute.direct(j)]}];
                         end
                         
                     end
@@ -619,10 +619,6 @@ classdef TrainDispatch < handle
                 end
 
 
-            end
-
-            if ~isempty(output.transfer)
-                output.transfer=output.transfer{2:end};
             end
 
         end
