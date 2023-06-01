@@ -518,7 +518,10 @@ classdef TrainDispatch < handle
             
         end
 
-        % region "列车遍历回调"
+% region 列车相关API
+
+    % region "列车遍历回调"
+        % 遍历所有列车
         function ForEachTrain(app, funcOut)
 
             for i = 1:length(app.Trains)
@@ -528,6 +531,7 @@ classdef TrainDispatch < handle
 
         end
 
+        % 遍历所有在开着的列车
         function ForEachActiveTrain(app, funcOut)
 
             for i = 1:length(app.Trains)
@@ -541,6 +545,7 @@ classdef TrainDispatch < handle
 
         end
 
+        % 将funcOut作用所有列车，返回函数返回true的list
         function output = filterActiveTrains(app, funcOut)
             output = [];
 
@@ -554,13 +559,16 @@ classdef TrainDispatch < handle
             end
 
         end
-
         
-        function output = findTrain(app, trainCode)
-            % 查询列车
-            output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
-        end
-        % endregion
+    % endregion
+
+    % 通过列车号返回列车对象
+    function output = findTrain(app, trainCode)
+        output = app.filterActiveTrains(@(train) strcmp(train.trainCode, trainCode));
+    end
+
+% endregion
+
 
         % region 订票相关API
 
