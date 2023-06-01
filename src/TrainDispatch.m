@@ -596,14 +596,16 @@ classdef TrainDispatch < handle
             % 假设我上每一辆车，如果乘到toStation就马上停下，否则乘到终点站
             for i = 1:length(passedTrains)
                 train = passedTrains(i);
-                % 同一路线的已经乘坐过了
                 if app.isEleInList(FoundType,train.PassType)
+                    % 同一路线的已经乘坐过了
                     continue;
                 end
 
                 % 看一看能不能直接乘到
                 if train.findPasswayStationAfterStation(toStation, fromStation)
-                    output.direct = [output.direct, train];
+                    newTicket=Ticket(train, fromStation, toStation);
+                    newTicket.printTicket();
+                    output.direct = [output.direct, newTicket];
                     FoundType = [FoundType, train.PassType];
                 
                 elseif level==0&&train.findPasswayStationAfterStation(train.remainingStations(end), fromStation)
@@ -612,7 +614,10 @@ classdef TrainDispatch < handle
                     nextRoute=app.findAvailableTickets(train.remainingStations(end), toStation,level+1);
                     if ~isempty(nextRoute.direct)
                         for j=1:length(nextRoute.direct)
-                            output.transfer = [output.transfer; {[train, nextRoute.direct(j)]}];
+                            newTicket=Ticket([train, nextRoute.direct(j).trainSeq(1)], fromStation, toStation);
+                            newTicket.printTicket();
+                            output.transfer = [output.transfer, newTicket];
+                            % output.transfer = [output.transfer; {[train, nextRoute.direct(j)]}];
                         end
                         
                     end
@@ -624,8 +629,10 @@ classdef TrainDispatch < handle
 
         end
 
+        % (弃用)
         function output = splitTrainCode(app, trainCode)
-            "将诸如'D22,D21'的字符串split成数组";
+            "WARNING 你正在调用一个弃用的API TrainDispatch.splitTrainCode()"
+            % "将诸如'D22,D21'的字符串split成数组";
 
             if ischar(trainCode)
                 trainCode = string(trainCode);
@@ -637,6 +644,20 @@ classdef TrainDispatch < handle
                 output = strsplit(trainCode, ",");
             end
 
+        end
+
+        function output = sortTicketsByAllTime(app,tickets)
+            timelist=[];
+            for i=1:length(tickets.direct)
+                % "直达列车"
+                % thetrain=tickets.direct(i);
+                % startTime=thetrain.getStationDepartureTime(Station(startStation));
+                % ToTime=thetrain.(Station(stopStation));
+                % price=thetrain.getPrice(Station(startStation),Station(stopStation));
+                % app.writeTicketPanel(1,dIndex,startStation,startTime,stopStation,ToTime,thetrain.trainCode,price);
+                % dIndex=dIndex+1;
+            end
+            
         end
 
         function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime, usrName)
