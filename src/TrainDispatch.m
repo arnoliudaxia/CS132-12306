@@ -53,38 +53,47 @@ classdef TrainDispatch < handle
 
         end
 
+        % 用户状态状态机，控制上车和下车的逻辑
         function output = checkIfOnTrain(app)
-            
-            
             for i = 1:length(app.usrsinfo)
                 
                 usr=app.usrsinfo(i);
-                recentTicket=app.getRecentTicket(usr.usrName);
+                recentTicket=app.getRecentTicket(usr.passangerName);
                 if isempty(recentTicket)
                     continue;
                 end
-                if strcmp(usr.usrStatus,"ONBOARD")
+                leaveTime=recentTicket.fromStation.departureTime;
+                toTime=recentTicket.toStation.arrivalTime;
+                if usr.myStatus==1 % ONBOARD
                     app.client(i).getTrainBtn.Enable=false;
                     % 下车了销毁票票
-                    if app.SysTime>recentTicket.toTime
+                    if app.SysTime>toTime
                         % 时间晚于票的到达时间，滚下去！
-                        app.usrsinfo(i).usrStatus="IDLE";
+                        usr.myStatus=0; % "IDLE"
                         % 顺便销票
-                        app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
+                        app.cancelATicketByIndex(usr.passangerName,recentTicket);
                         
                     end
                 end
 
-                if strcmp(usr.usrStatus,"IDLE")
+                if usr.myStatus==0 % IDLE
                     % 发车前三分钟让客户上车
-                    if app.SysTime<recentTicket.startTime &&  app.SysTime>=recentTicket.startTime-minutes(3)
-                        app.client(i).getTrainBtn.Enable=true;
+                    
+                    if app.SysTime<leaveTime &&  app.SysTime>=leaveTime-minutes(3)
+                        
+                        if app.debugApp.autoGetTrain.Value
+                            % 自动上车模式
+                            usr.myStatus=1; % "ONBOARD"
+
+                        else
+                            app.client(i).getTrainBtn.Enable=true;
+                        end
                     end
                     if app.debugApp.autoGetTrain.Value==false
                         % "手动上车模式"
-                        if app.SysTime<recentTicket.startTime
+                        if app.SysTime>leaveTime
                             "没上车给爷滚蛋"
-                            app.cancelATicketByTrainCode(usr.usrName,recentTicket.trainCode);
+                            app.cancelATicketByIndex(usr.passangerName,recentTicket);
                             app.client(i).getTrainBtn.Enable=false;
 
                         end
@@ -1004,6 +1013,8 @@ classdef TrainDispatch < handle
             output = app.usrsinfo(usrIndex).ticket;
         end
 
+        % 弃用
+        % 旧版本API
         function cancelATicketByTrainCode(app, usrName, trainCode)
             "用户"+usrName+"取消"+trainCode
             usrIndex = app.findUsr(usrName);
@@ -1022,7 +1033,7 @@ classdef TrainDispatch < handle
 
         end
 
-        % 取消票
+        % 取消票API
         function cancelATicketByIndex(app, usrname, ticket)
             usr = app.findUsr(usrname);
             app.bookTicketN(ticket, usrname, ticket.seatLevel,-1);

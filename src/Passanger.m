@@ -49,7 +49,7 @@ classdef Passanger<handle
 
         % 删除用户的ticket
         % 参数：ticket，要删除的ticket，必须在用户的myTickets中
-        function output = removeTicket(app,ticket)
+        function removeTicket(app,ticket)
             for i = 1:length(app.myTickets)
                 theTicket=app.myTickets(i);
                 if strcmp(theTicket.trainCode,ticket.trainCode)
