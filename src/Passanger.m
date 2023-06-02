@@ -4,8 +4,7 @@ classdef Passanger<handle
         passangerName
         myStatus
             % IDLE=0
-            % BOOKED=1
-            % ONBOARD=2
+            % ONBOARD=1
         myTickets=[]
     end
     
@@ -14,6 +13,12 @@ classdef Passanger<handle
             obj.myStatus=0;
             obj.passangerName=name;            
         end
+    end
+    methods (Access = private)
+        % % 
+        % function obj = getTicket(obj,args)
+            
+        % end
     end
     methods (Access = public)
         
@@ -26,6 +31,29 @@ classdef Passanger<handle
                 theTicket=app.myTickets(i);
                 if strcmp(theTicket.trainCode,ticket.trainCode)
                     output=true;
+                    return;
+                end
+                
+            end
+        end
+
+        % 获取文本形式的用户状态
+        function output = getMyStatus(app)
+            if app.myStatus==1
+                output="ONBOARD";
+            else
+                output="IDLE";
+            end
+            
+        end
+
+        % 删除用户的ticket
+        % 参数：ticket，要删除的ticket，必须在用户的myTickets中
+        function output = removeTicket(app,ticket)
+            for i = 1:length(app.myTickets)
+                theTicket=app.myTickets(i);
+                if strcmp(theTicket.trainCode,ticket.trainCode)
+                    app.myTickets(i)=[];
                     return;
                 end
                 

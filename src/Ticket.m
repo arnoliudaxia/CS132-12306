@@ -8,11 +8,12 @@ classdef Ticket < handle
         toStation
         allTime %待在火车上的时间
         price
+        seatLevel %1是商务，2是经济
 
     end
     
     methods
-        function obj = Ticket(ticketTrain,fromStation,toStation)
+        function obj = Ticket(ticketTrain,fromStation,toStation,seatL)
             %TICKET 构造此类的实例
             %   此处显示详细说明
             obj.trainSeq = [obj.trainSeq,ticketTrain];
@@ -41,6 +42,10 @@ classdef Ticket < handle
                 % "然后获取最后一个转乘车的价格"
                 obj.price = obj.price + obj.trainSeq(end).getPriceToStaion(toStation);
             end
+            if nargin < 4 || isempty(seatL)
+                seatL=2;
+            end
+            obj.seatLevel=seatL;
             
 
         end

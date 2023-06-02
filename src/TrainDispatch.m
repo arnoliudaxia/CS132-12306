@@ -867,42 +867,54 @@ classdef TrainDispatch < handle
 
         % 新版本订票API，外部调用用这个
         % 返回一个bool，代表是否成功订票
-        function output = bookTicketN(app,ticket,usrName,level)
+        function output = bookTicketN(app,ticket,usrName,level,num)
             disp("乘客"+usrName+"订购"+ticket.trainCode+"从"+ticket.fromStation.stationName+"到"+ticket.toStation.stationName+"的"+level+"级座位")
-            % 先check一下是否有座位
-            availableSeats=app.requestAvailableSeats(ticket.trainSeq, ticket.fromStation, ticket.toStation);
-            if availableSeats(level)<1
-                disp("没有座位了");
-                output=false;
-                return;
+            if nargin < 5 || isempty(num)
+                num = 1
             end
-            % 再check一下是不是买过票了
-            usr = app.findUsr(usrName);
-            if usr.isHasBoughtTicket(ticket)
-                disp("已经买过票了");
-                output=false;
-                return;
+
+            if num == 1
+                % 先check一下是否有座位
+                availableSeats = app.requestAvailableSeats(ticket.trainSeq, ticket.fromStation, ticket.toStation);
+
+                if availableSeats(level) < 1
+                    disp("没有座位了");
+                    output = false;
+                    return;
+                end
+
+                % 再check一下是不是买过票了
+                usr = app.findUsr(usrName);
+
+                if usr.isHasBoughtTicket(ticket)
+                    disp("已经买过票了");
+                    output = false;
+                    return;
+                end
+
             end
 
             % 没问题了，买票
             output=true;
 
             if length(ticket.trainSeq) > 1
-                ticket.trainSeq(1).bookTicketFrom(ticket.fromStation, level, 1);
+                ticket.trainSeq(1).bookTicketFrom(ticket.fromStation, level, num);
 
                 for i = 2:length(ticket.trainSeq) - 1
                     train = ticket.trainSeq(i);
-                    train.bookTicketAll(level, 1);
+                    train.bookTicketAll(level, num);
                 end
 
-                ticket.trainSeq(end).bookTicketTo(ticket.toStation, level, 1);
+                ticket.trainSeq(end).bookTicketTo(ticket.toStation, level, num);
 
             else
                 train = ticket.trainSeq;
-                train.bookTicket(ticket.fromStation, ticket.toStation, level, 1);
+                train.bookTicket(ticket.fromStation, ticket.toStation, level, num);
             end
             app.debugApp.displaySeats();
-            app.recordTicket(usrName, ticket); %返回票在堆栈里的索引
+            if num==1
+                app.recordTicket(usrName, ticket,level);
+            end
 
             
         end
@@ -915,14 +927,14 @@ classdef TrainDispatch < handle
                 firstTrain = train(1);
                 remain = app.requestAvailableSeats(firstTrain, fromStation, "");
 
-                for i = 2:length(trains) - 1
-                    thetrain = trains(i);
+                for i = 2:length(train) - 1
+                    thetrain = train(i);
                     thisRemaining = app.requestAvailableSeats(thetrain, "", "");
                     remain(1) = min(remain(1), thisRemaining(1));
                     remain(2) = min(remain(2), thisRemaining(2));
                 end
 
-                lastTrain = trains(end);
+                lastTrain = train(end);
                 endreamin = app.requestAvailableSeats(lastTrain, "", toStation);
                 remain(1) = min(remain(1), endreamin(1));
                 remain(2) = min(remain(2), endreamin(2));
@@ -930,7 +942,6 @@ classdef TrainDispatch < handle
                 output = remain;
 
             else
-                % train = app.findTrain(trainCode);
 
                 if strcmp(fromStation, "") && ~strcmp(toStation, "")
                     output = train.requestAvailableSeats(train.remainingStations(1), toStation);
@@ -1011,15 +1022,15 @@ classdef TrainDispatch < handle
 
         end
 
-        function cancelATicketByIndex(app, usrname, index)
-            usrIndex = app.findUsr(usrname);
-            ticket=app.usrsinfo(usrIndex).ticket(index);
-            app.bookTicket(ticket.trainCode, ticket.startStation, ticket.toStation, ticket.seatLevel, -1, ticket.startTime, ticket.toTime, usrname)
-            app.usrsinfo(usrIndex).ticket(index) = [];
-
+        % 取消票
+        function cancelATicketByIndex(app, usrname, ticket)
+            usr = app.findUsr(usrname);
+            app.bookTicketN(ticket, usrname, ticket.seatLevel,-1);
+            usr.removeTicket(ticket);
         end
 
-        % 获取用户最近购买的一张票
+        % 获取用户购买的最近发车的票
+        % 返回值：Ticket
         function output = getRecentTicket(app, usrName)
             usr = app.findUsr(usrName);
             tickets = usr.myTickets;
@@ -1049,9 +1060,10 @@ classdef TrainDispatch < handle
 
         % （内部函数）
         % 将用户的买的票保存到系统内
-        function output = recordTicket(app, usrname, ticket)
+        function output = recordTicket(app, usrname, ticket, level)
             usr = app.findUsr(usrname);
             usr.myTickets = [usr.myTickets, ticket];
+            usr.myTickets(end).seatLevel=level;
         end
 
         function onBoard(app,usrname)
