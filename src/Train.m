@@ -276,6 +276,8 @@ classdef Train < handle
             app.bookTicket(app.remainingStations(1),app.remainingStations(end),seatLevel,numberOfTickets)
         end
 
+        % 查询从fromStation到toStation的剩余座位数
+        % 返回：[vip, npc]，vip表示商务座，npc表示普通座
         function output = requestAvailableSeats(app, fromStation, toStation)
             minVip = 100;
             minNPC = 100;

@@ -862,12 +862,12 @@ classdef TrainDispatch < handle
 
         end
 
-        function output = requestAvailableSeats(app, trainCode, fromStation, toStation)
-            trainCode = app.splitTrainCode(trainCode);
+        % 查询列车在该区间内的可用座位数量
+        % 参数：train：火车序列；
+        function output = requestAvailableSeats(app, train, fromStation, toStation)
 
-            if length(trainCode) > 1
-                trains = trainCode;
-                firstTrain = trains(1);
+            if length(train) > 1
+                firstTrain = train(1);
                 remain = app.requestAvailableSeats(firstTrain, fromStation, "");
 
                 for i = 2:length(trains) - 1
@@ -885,7 +885,7 @@ classdef TrainDispatch < handle
                 output = remain;
 
             else
-                train = app.findTrain(trainCode);
+                % train = app.findTrain(trainCode);
 
                 if strcmp(fromStation, "") && ~strcmp(toStation, "")
                     output = train.requestAvailableSeats(train.remainingStations(1), toStation);
