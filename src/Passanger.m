@@ -1,21 +1,16 @@
 classdef Passanger<handle
-    %PASSANGER 此处显示有关此类的摘要
-    %   此处显示详细说明
     
     properties
-        passangerId
         passangerName
-        bookTrain
         myStatus
             % IDLE=0
             % BOOKED=1
             % ONBOARD=2
-        myTickets
+        myTickets=[]
     end
     
     methods (Access = public)
-        function obj = Passanger(id,name)
-            obj.passangerId=id;
+        function obj = Passanger(name)
             obj.myStatus=0;
             obj.passangerName=name;            
         end

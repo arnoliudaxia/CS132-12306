@@ -826,7 +826,10 @@ classdef TrainDispatch < handle
             output =tickets;
         end
 
+        % 弃用
+        % 旧版本订票API
         function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime, usrName)
+            "WARNING 你正在调用一个弃用的API TrainDispatch.bookTicket()"
             % 需要Station格式
             disp("乘客"+usrName+"订购"+trainCode+"从"+fromStation.stationName+"到"+toStation.stationName+"的"+number+"张"+level+"级座位")
             trainCode = app.splitTrainCode(trainCode);
@@ -860,6 +863,38 @@ classdef TrainDispatch < handle
                 output=app.recordTicket(usrName, ticket); %返回票在堆栈里的索引
             end
 
+        end
+
+        % 新版本订票API，外部调用用这个
+        % 返回一个bool，代表是否成功订票
+        function output = bookTicketN(app,ticket,usrName,level)
+            disp("乘客"+usrName+"订购"+ticket.trainCode+"从"+ticket.fromStation.stationName+"到"+ticket.toStation.stationName+"的"+level+"级座位")
+            % 先check一下是否有座位
+            availableSeats=app.requestAvailableSeats(ticket.trainSeq, ticket.fromStation, ticket.toStation);
+            if availableSeats(level)<1
+                output=false;
+                return;
+            end
+            output=true;
+
+            if length(ticket.trainSeq) > 1
+                ticket.trainSeq(1).bookTicketFrom(ticket.fromStation, level, 1);
+
+                for i = 2:length(ticket.trainSeq) - 1
+                    train = ticket.trainSeq(i);
+                    train.bookTicketAll(level, 1);
+                end
+
+                ticket.trainSeq(end).bookTicketTo(ticket.toStation, level, 1);
+
+            else
+                train = ticket.trainSeq;
+                train.bookTicket(ticket.fromStation, ticket.toStation, level, 1);
+            end
+            app.debugApp.displaySeats();
+            app.recordTicket(usrName, ticket); %返回票在堆栈里的索引
+
+            
         end
 
         % 查询列车在该区间内的可用座位数量
@@ -924,26 +959,23 @@ classdef TrainDispatch < handle
 
         % endregion 订票相关API
 
-        % region 用户相关API
+    % region 用户相关API
 
+        % 先系统中注册一个用户
         function addUsr(app,name)
-            app.usrsinfo=[app.usrsinfo,struct("usrName",name,"usrStatus","IDLE","ticket",[])];
+            app.usrsinfo=[app.usrsinfo,Passanger(name)];
         end
 
+        % 告诉我乘客的名字，返回乘客的对象
+        % 如果找不到返回false
         function output = findUsr(app, usrname)
-            % "返回结构体数组中的对应用户结构体的缩影"
+            output=false;
             for i=1:length(app.usrsinfo)
-                if strcmp(app.usrsinfo(i).usrName, usrname)
-                    idx=i;
+                if strcmp(app.usrsinfo(i).passangerName, usrname)
+                    output=app.usrsinfo(i);
+                    return;
                 end
             end
-
-            if isempty(idx)
-                output = -1;
-            else
-                output = idx;
-            end
-
         end
 
         function output = getMyTickets(app, usrname)
@@ -977,9 +1009,10 @@ classdef TrainDispatch < handle
 
         end
 
+        % 获取用户最近购买的一张票
         function output = getRecentTicket(app, usrName)
-            usrIndex = app.findUsr(usrName);
-            tickets = app.usrsinfo(usrIndex).ticket;
+            usr = app.findUsr(usrName);
+            tickets = usr.myTickets;
 
             if isempty(tickets)
                 output = [];
@@ -991,7 +1024,7 @@ classdef TrainDispatch < handle
 
             for i = 1:length(tickets)
                 ticket = tickets(i);
-                time = ticket.startTime;
+                time = ticket.fromStation.departureTime;
 
                 if time < earTIme
                     earTIme = time;
@@ -1004,11 +1037,11 @@ classdef TrainDispatch < handle
 
         end
 
+        % （内部函数）
+        % 将用户的买的票保存到系统内
         function output = recordTicket(app, usrname, ticket)
-            usrIndex = app.findUsr(usrname);
-            app.usrsinfo(usrIndex).ticket = [app.usrsinfo(usrIndex).ticket, ticket];
-            % 返回当前票的索引
-            output=length(app.usrsinfo(usrIndex).ticket)
+            usr = app.findUsr(usrname);
+            usr.myTickets = [usr.myTickets, ticket];
         end
 
         function onBoard(app,usrname)

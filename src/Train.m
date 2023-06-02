@@ -204,78 +204,8 @@ classdef Train < handle
             end
 
         end
-
-        % 判断这俩车车是否会经过filterStation后到达queryStation（queryStation需要包含arrivalTime）
-        % 注意如果沿途发现没有作为会立刻打断
-        % 返回值 output为0代表不经过，为1代表经过
-        function output = findPasswayStationAfterStation(app, queryStation, filterStation)
-            output = 0;
-            flag = true;
-
-            for i = 1:length(app.remainingStations)
-                station = app.remainingStations(i);
-
-                if station.remainingSeats(2)==0
-                    break;
-                end
-
-                if flag && strcmp(station.stationName, filterStation.stationName)
-                    flag = false;
-                end
-
-                if ~flag && strcmp(station.stationName, queryStation.stationName)
-                    output = 1;
-                    break;
-                end
-
-            end
-
-        end
-
-        function bookTicket(app, fromStation, toStation, seatLevel, numberOfTickets)
-
-            if isempty(numberOfTickets)
-                numberOfTickets = 1;
-            end
-
-            "订购从"+fromStation.stationName + "到"+toStation.stationName + "的"+seatLevel + "票"
-            startBookFlag = false;
-
-            for i = 1:length(app.remainingStations)
-                station = app.remainingStations(i);
-
-                if strcmp(app.remainingStations(i).stationName, fromStation.stationName)
-                    startBookFlag = true;
-                end
-
-                if strcmp(app.remainingStations(i).stationName, toStation.stationName)
-                    break;
-                end
-
-                if startBookFlag
-                    app.remainingStations(i).remainingSeats(seatLevel) = station.remainingSeats(seatLevel) - numberOfTickets;
-                end
-
-                "当前车次"+app.trainCode + "在"+station.stationName + "的剩余座位数为"
-                "商务舱"+app.remainingStations(i).remainingSeats(1) + "普通座"+app.remainingStations(i).remainingSeats(2)
-
-            end
-
-        end
-
-        function bookTicketFrom(app, fromStation, seatLevel, numberOfTickets)
-            "从该站一直book到终点站"
-            app.bookTicket(fromStation,app.remainingStations(end),seatLevel,numberOfTickets)
-        end
-        function bookTicketTo(app, toStation, seatLevel, numberOfTickets)
-            "从起始站一直book到该站"
-            app.bookTicket(app.remainingStations(1),toStation,seatLevel,numberOfTickets)
-        end
-        function bookTicketAll(app, toStation, seatLevel, numberOfTickets)
-            "一路book"
-            app.bookTicket(app.remainingStations(1),app.remainingStations(end),seatLevel,numberOfTickets)
-        end
-
+        % region 查询API
+        
         % 查询从fromStation到toStation的剩余座位数
         % 返回：[vip, npc]，vip表示商务座，npc表示普通座
         function output = requestAvailableSeats(app, fromStation, toStation)
@@ -304,6 +234,101 @@ classdef Train < handle
             output = [minVip, minNPC];
 
         end
+
+        % endregion
+
+
+        % 判断这俩车车是否会经过filterStation后到达queryStation（queryStation需要包含arrivalTime）
+        % 注意如果沿途发现没有作为会立刻打断
+        % 返回值 output为0代表不经过，为1代表经过
+        function output = findPasswayStationAfterStation(app, queryStation, filterStation)
+            output = 0;
+            flag = true;
+
+            for i = 1:length(app.remainingStations)
+                station = app.remainingStations(i);
+
+                if station.remainingSeats(2)==0
+                    break;
+                end
+
+                if flag && strcmp(station.stationName, filterStation.stationName)
+                    flag = false;
+                end
+
+                if ~flag && strcmp(station.stationName, queryStation.stationName)
+                    output = 1;
+                    break;
+                end
+
+            end
+
+        end
+
+        % region 订票API
+
+        % 订票主函数，从fromStation到toStation，座位等级为seatLevel，订票数量为numberOfTickets
+        % 返回值：订票成功返回true，否则返回false
+        function output=bookTicket(app, fromStation, toStation, seatLevel, numberOfTickets) 
+
+            if isempty(numberOfTickets)
+                numberOfTickets = 1;
+            end
+
+            "订购从"+fromStation.stationName + "到"+toStation.stationName + "的"+seatLevel + "票"
+            % 先检查一下是否有座位
+            availableS=app.requestAvailableSeats(fromStation, toStation);
+            if availableS(seatLevel)<numberOfTickets
+                "没有足够的座位"
+                output = false;
+                return;
+            end
+            output=true;
+
+            startBookFlag = false;
+
+            for i = 1:length(app.remainingStations)
+                station = app.remainingStations(i);
+
+                if strcmp(app.remainingStations(i).stationName, fromStation.stationName)
+                    startBookFlag = true;
+                end
+
+                if strcmp(app.remainingStations(i).stationName, toStation.stationName)
+                    break;
+                end
+
+                if startBookFlag
+                    app.remainingStations(i).remainingSeats(seatLevel) = station.remainingSeats(seatLevel) - numberOfTickets;
+                end
+
+                "当前车次"+app.trainCode + "在"+station.stationName + "的剩余座位数为"
+                "商务舱"+app.remainingStations(i).remainingSeats(1) + "普通座"+app.remainingStations(i).remainingSeats(2)
+
+            end
+
+        end
+
+        % "从该站一直book到终点站"，订一张票
+        % 返回值：订票成功返回true，否则返回false
+        function output=bookTicketFrom(app, fromStation, seatLevel, numberOfTickets)
+            output=app.bookTicket(fromStation,app.remainingStations(end),seatLevel,numberOfTickets);
+        end
+        
+        % "从起始站一直book到该站"
+        % 返回值：订票成功返回true，否则返回false
+        function output=bookTicketTo(app, toStation, seatLevel, numberOfTickets)
+            output=app.bookTicket(app.remainingStations(1),toStation,seatLevel,numberOfTickets);
+        end
+        % "一路book"
+        % 返回值：订票成功返回true，否则返回false
+        function output=bookTicketAll(app, seatLevel, numberOfTickets)
+            output=app.bookTicket(app.remainingStations(1),app.remainingStations(end),seatLevel,numberOfTickets);
+        end
+
+
+
+        % endregion
 
     % region 价格API
 
