@@ -576,9 +576,9 @@ classdef TrainDispatch < handle
         % 查票函数
         % fromStation, toStation是Station对象
         % level 是递归层数量，外部调用一律给0
-        % 返回值是一个struct, output.direct包含了所有直达车组成的list；output.transfer包含了所有非直达车组成的cell，其中每个元素是一个list
+        % 返回值是一个struct, output.direct包含了所有直达车组成的Ticket list；output.transfer包含了所有非直达车组成的Ticket list
         function output = findAvailableTickets(app, fromStation, toStation,level)
-            "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
+            % "查询从 "+fromStation.stationName + " 到 "+toStation.stationName
             % "当前两个站点的距离为"+fromStation.getDistance(toStation)
             output = struct();
             output.direct=[];
@@ -646,18 +646,184 @@ classdef TrainDispatch < handle
 
         end
 
+        % 根据最少耗时排序车票列表
+        % 参数tickets需要和findAvailableTickets返回的同类型
+        % 返回一个排好序的tickets
         function output = sortTicketsByAllTime(app,tickets)
-            timelist=[];
-            for i=1:length(tickets.direct)
-                % "直达列车"
-                % thetrain=tickets.direct(i);
-                % startTime=thetrain.getStationDepartureTime(Station(startStation));
-                % ToTime=thetrain.(Station(stopStation));
-                % price=thetrain.getPrice(Station(startStation),Station(stopStation));
-                % app.writeTicketPanel(1,dIndex,startStation,startTime,stopStation,ToTime,thetrain.trainCode,price);
-                % dIndex=dIndex+1;
+            n=length(tickets.direct);
+            % "直达列车"
+            % 进行 n-1 轮的比较和交换
+            for i = 1:n - 1
+                swapped = false;
+
+                % 遍历列表并进行比较
+                for j = 1:n - i
+                    % 如果当前元素大于下一个元素，则交换它们
+                    if tickets.direct(j).allTime > tickets.direct(j + 1).allTime
+                        temp = tickets.direct(j);
+                        tickets.direct(j) = tickets.direct(j + 1);
+                        tickets.direct(j + 1) = temp;
+
+                        % 设置标志为已交换
+                        swapped = true;
+                    end
+
+                end
+
+                % 如果该轮没有进行交换，则列表已经有序，直接退出循环
+                if ~swapped
+                    break;
+                end
+
+            end
+            % 转乘排序 
+            n=length(tickets.transfer);
+            % "直达列车"
+            % 进行 n-1 轮的比较和交换
+            for i = 1:n - 1
+                swapped = false;
+
+                % 遍历列表并进行比较
+                for j = 1:n - i
+                    % 如果当前元素大于下一个元素，则交换它们
+                    if tickets.transfer(j).allTime > tickets.transfer(j + 1).allTime
+                        temp = tickets.transfer(j);
+                        tickets.transfer(j) = tickets.transfer(j + 1);
+                        tickets.transfer(j + 1) = temp;
+
+                        % 设置标志为已交换
+                        swapped = true;
+                    end
+
+                end
+
+                % 如果该轮没有进行交换，则列表已经有序，直接退出循环
+                if ~swapped
+                    break;
+                end
+
             end
             
+            output =tickets;
+            
+        end
+
+        % 根据最早到时排序车票列表
+        function output = sortTicketsByEarilest(app,tickets)
+            n=length(tickets.direct);
+            % "直达列车"
+            % 进行 n-1 轮的比较和交换
+            for i = 1:n - 1
+                swapped = false;
+
+                % 遍历列表并进行比较
+                for j = 1:n - i
+                    % 如果当前元素大于下一个元素，则交换它们
+                    if tickets.direct(j).toStation.arrivalTime > tickets.direct(j + 1).toStation.arrivalTime
+                        temp = tickets.direct(j);
+                        tickets.direct(j) = tickets.direct(j + 1);
+                        tickets.direct(j + 1) = temp;
+
+                        % 设置标志为已交换
+                        swapped = true;
+                    end
+
+                end
+
+                % 如果该轮没有进行交换，则列表已经有序，直接退出循环
+                if ~swapped
+                    break;
+                end
+
+            end
+            % 转乘排序 
+            n=length(tickets.transfer);
+            % "直达列车"
+            % 进行 n-1 轮的比较和交换
+            for i = 1:n - 1
+                swapped = false;
+
+                % 遍历列表并进行比较
+                for j = 1:n - i
+                    % 如果当前元素大于下一个元素，则交换它们
+                    if tickets.transfer(j).toStation.arrivalTime > tickets.transfer(j + 1).toStation.arrivalTime
+                        temp = tickets.transfer(j);
+                        tickets.transfer(j) = tickets.transfer(j + 1);
+                        tickets.transfer(j + 1) = temp;
+
+                        % 设置标志为已交换
+                        swapped = true;
+                    end
+
+                end
+
+                % 如果该轮没有进行交换，则列表已经有序，直接退出循环
+                if ~swapped
+                    break;
+                end
+
+            end
+            
+            output =tickets;
+        end
+
+        % 根据最低价格排序车票列表
+        function output = sortTicketsByPrice(app,tickets)
+            n=length(tickets.direct);
+            % "直达列车"
+            % 进行 n-1 轮的比较和交换
+            for i = 1:n - 1
+                swapped = false;
+
+                % 遍历列表并进行比较
+                for j = 1:n - i
+                    % 如果当前元素大于下一个元素，则交换它们
+                    if tickets.direct(j).price > tickets.direct(j + 1).price
+                        temp = tickets.direct(j);
+                        tickets.direct(j) = tickets.direct(j + 1);
+                        tickets.direct(j + 1) = temp;
+
+                        % 设置标志为已交换
+                        swapped = true;
+                    end
+
+                end
+
+                % 如果该轮没有进行交换，则列表已经有序，直接退出循环
+                if ~swapped
+                    break;
+                end
+
+            end
+            % 转乘排序 
+            n=length(tickets.transfer);
+            % "直达列车"
+            % 进行 n-1 轮的比较和交换
+            for i = 1:n - 1
+                swapped = false;
+
+                % 遍历列表并进行比较
+                for j = 1:n - i
+                    % 如果当前元素大于下一个元素，则交换它们
+                    if tickets.transfer(j).price > tickets.transfer(j + 1).price
+                        temp = tickets.transfer(j);
+                        tickets.transfer(j) = tickets.transfer(j + 1);
+                        tickets.transfer(j + 1) = temp;
+
+                        % 设置标志为已交换
+                        swapped = true;
+                    end
+
+                end
+
+                % 如果该轮没有进行交换，则列表已经有序，直接退出循环
+                if ~swapped
+                    break;
+                end
+
+            end
+            
+            output =tickets;
         end
 
         function output = bookTicket(app, trainCode, fromStation, toStation, level, number, startTime, EndTime, usrName)
