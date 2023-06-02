@@ -4,7 +4,6 @@ classdef Train < handle
 
     properties
         trainCode %火车代号，例如"D21"，一个字符串
-        passangers
         remainingStations = []
         status %'NOTSTARTED','RUNNING', 'STOP'
         lineType %两条线路，短的是1，长的是2
@@ -88,7 +87,6 @@ classdef Train < handle
 
         function obj = Train(code, stations, lineT)
             obj.trainCode = code;
-            obj.passangers = [];
             obj.remainingStations = stations;
             obj.status = 'NOTSTARTED';
             obj.lineType = lineT;
@@ -105,6 +103,7 @@ classdef Train < handle
 
         end
 
+        % 更新火车状态机
         function updateTrainStatus(app, timeNow)
 
             if strcmp(app.status, 'NOTSTARTED')
@@ -139,6 +138,7 @@ classdef Train < handle
             end
 
         end
+        % region 查询API
 
         % 判断这俩车车是否会经过queryStation站点（包括时间点信息，所以queryStation需要包含arrivalTime）
         % 返回值 为1或者0，1代表会经过，0代表不会经过
@@ -204,8 +204,7 @@ classdef Train < handle
             end
 
         end
-        % region 查询API
-        
+
         % 查询从fromStation到toStation的剩余座位数
         % 返回：[vip, npc]，vip表示商务座，npc表示普通座
         function output = requestAvailableSeats(app, fromStation, toStation)
@@ -235,8 +234,6 @@ classdef Train < handle
 
         end
 
-        % endregion
-
 
         % 判断这俩车车是否会经过filterStation后到达queryStation（queryStation需要包含arrivalTime）
         % 注意如果沿途发现没有作为会立刻打断
@@ -264,6 +261,8 @@ classdef Train < handle
             end
 
         end
+        
+        % endregion
 
         % region 订票API
 

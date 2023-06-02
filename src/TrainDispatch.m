@@ -11,7 +11,7 @@ classdef TrainDispatch < handle
         Trains = []
         Stations = []
         debugApp
-        usrsinfo=[] % 储存用户相关的信息，包括用户名、车票
+        usrsinfo=[] % 活动用户对象列表
         client=[]
         deltaTimePerFrame=1;
     end
@@ -54,7 +54,7 @@ classdef TrainDispatch < handle
         end
 
         % 用户状态状态机，控制上车和下车的逻辑
-        function output = checkIfOnTrain(app)
+        function checkIfOnTrain(app)
             for i = 1:length(app.usrsinfo)
                 
                 usr=app.usrsinfo(i);
@@ -930,6 +930,7 @@ classdef TrainDispatch < handle
 
         % 查询列车在该区间内的可用座位数量
         % 参数：train：火车序列；
+        % 返回值：[int,int]，因为有两种座位
         function output = requestAvailableSeats(app, train, fromStation, toStation)
 
             if length(train) > 1
@@ -1008,11 +1009,6 @@ classdef TrainDispatch < handle
             end
         end
 
-        function output = getMyTickets(app, usrname)
-            usrIndex = app.findUsr(usrname);
-            output = app.usrsinfo(usrIndex).ticket;
-        end
-
         % 弃用
         % 旧版本API
         function cancelATicketByTrainCode(app, usrName, trainCode)
@@ -1071,15 +1067,10 @@ classdef TrainDispatch < handle
 
         % （内部函数）
         % 将用户的买的票保存到系统内
-        function output = recordTicket(app, usrname, ticket, level)
+        function recordTicket(app, usrname, ticket, level)
             usr = app.findUsr(usrname);
             usr.myTickets = [usr.myTickets, ticket];
             usr.myTickets(end).seatLevel=level;
-        end
-
-        function onBoard(app,usrname)
-            usrIndex = app.findUsr(usrname);
-            app.usrsinfo(usrIndex).usrStatus="ONBOARD";          
         end
 
         % endregion
