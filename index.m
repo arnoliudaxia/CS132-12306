@@ -6,7 +6,7 @@
 
 % Clear the workspace
 clear;
-close all;
+close all force;
 clc;
 
 % Initialize environment variables

@@ -1,0 +1,223 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class TrainDispatch{
++ datetime SysTime
++string SysTimeDisplay
+-Timer SysTimeCron
++Train[] Trains
++Station[] Stations
+-Passanger[] usrsinfo
+-int deltaTimePerFrame
+
+- bool isEleInList(~, list, ele)
+- void checkIfOnTrain(app)
++ void TrainDispatch()
+.. 时间系统API ..
+- void update_sys_time(Obj, ~, ~)
++ void changeSysTime(app, deltaTime)
++ void timerControl(app,flag)
+.. 列车相关API ..
++ void ForEachTrain(app, funcOut)
++ void ForEachActiveTrain(app, funcOut)
++ Train[] filterActiveTrains(app, funcOut)
+.. 订票相关API ..
++Struct findAvailableTickets(app, fromStation, toStation,level)
++Ticket[] sortTicketsByAllTime(app,tickets)
++Ticket[] sortTicketsByEarilest(app,tickets)
++Ticket[] sortTicketsByPrice(app,tickets)
++bool bookTicketN(app,ticket,usrName,level,num)
++int[] requestAvailableSeats(app, train, fromStation, toStation)
++int getPriceForTransferTrains(app, trains, fromStation, toStation)
+.. 用户相关API ..
++void addUsr(app,name)
++Passanger findUsr(app, usrname)
++void cancelATicketByIndex(app, usrname, ticket)
++Ticket getRecentTicket(app, usrName)
+-void recordTicket(app, usrname, ticket, level)
+}
+
+class Train{
+ +string trainCode
+ +Station[] remainingStations
+ +trainStatus status
+ +int lineType
+ +int lineDirection
+ +bool DorG
+ +int PassType
+
+-int passType(~, trainName)
++Train Train(code, stations, lineT)
++void updateTrainStatus(app, timeNow)
+.. 查询API ..
++bool findPasswayStation(app, queryStation)
++bool findPasswayStationAfterStation(app, queryStation, filterStation)
++datetime getStationDepartureTime(app, queryStation)
++datetime getStationArrrivalTime(app, queryStation)
++int[] requestAvailableSeats(app, fromStation, toStation)
+.. 订票API ..
++bool bookTicket(app, fromStation, toStation, seatLevel, numberOfTickets)
++bool bookTicketFrom(app, fromStation, seatLevel, numberOfTickets)
++bool bookTicketTo(app, toStation, seatLevel, numberOfTickets)
++bool bookTicketAll(app, seatLevel, numberOfTickets)
+.. 价格API ..
++int getPrice(app, station1, station2)
++int getPriceForNonDirect(app)
++int getPriceToStaion(app, station)
+}
+TrainDispatch "1" *-- "26" Train : 管理 >
+
+class Station{
+    +string stationName
+    +datetime arrivalTime
+    +datetime departureTime
+    +int[] remainingSeats
+
+    +Station  Station(name)
+    +bool isSameSide(app, other)
+}
+
+TrainDispatch "1" *-- "8" Station : 管理 >
+
+
+Station "1..n" --* "1" Train : < 经过
+
+
+
+enum trainStatus{
+    NOTSTARTED
+    RUNNING
+    STOPPED
+}
+
+Train *-- trainStatus
+
+interface matlabAPP
+
+class debugApp{
+-TrainDispatch trainDispatch
+-Train displaySeatTrain
+    +void display_update_systime(app)
+    +void updateTrainUI(app)
+    +void displaySeats(app)
+    -void drawMap(app)
+    -Silder getTrainSilder(app,train)
+    -float computeSliderValue(app,train)
+    -void add10mButtonPushed(app, event)
+    -void add1hButtonPushed(app, event)
+    -void minus10mButton_2Pushed(app, event)
+    -void add5mButtonPushed(app, event)
+    -void add30mButtonPushed(app, event)
+    -void trainICOND21ImageClicked(app, event)
+    -void trainICOND23ImageClicked(app, event)
+    -void trainICOND24ImageClicked(app, event)
+    -void trainICOND25ImageClicked(app, event)
+    -void trainICOND26ImageClicked(app, event)
+    -void trainICOND22ImageClicked(app, event)
+    -void trainICONG26ImageClicked(app, event)
+     -void trainICONG24ImageClicked(app, event)
+     -void trainICONG22ImageClicked(app, event)
+     -void trainICONG25ImageClicked(app, event)
+     -void trainICONG23ImageClicked(app, event)
+     -void trainICONG21ImageClicked(app, event)
+     -void trainICOND11ImageClicked(app, event)
+     -void trainICOND13ImageClicked(app, event)
+     -void trainICOND15ImageClicked(app, event)
+     -void trainICOND17ImageClicked(app, event)
+     -void trainICOND12ImageClicked(app, event)
+     -void trainICOND14ImageClicked(app, event)
+     -void trainICOND16ImageClicked(app, event)
+     -void trainICOND18ImageClicked(app, event)
+     -void trainICONexample_21ImageClicked(app, event)
+     -void trainICONexample_22ImageClicked(app, event)
+     -void trainICONexample_23ImageClicked(app, event)
+     -void trainICONexample_24ImageClicked(app, event)
+     -void trainICONexample_25ImageClicked(app, event)
+     -void trainICONexample_26ImageClicked(app, event)
+     -void add5mButton_2Pushed(app, event)
+     -void isAutoTimeCheckBoxValueChanged(app, event)
+     -void speedUpBtnButtonPushed(app, event)
+     -void speeddownBtnButtonPushed(app, event)
+}
+
+TrainDispatch "1" *-- "1" debugApp
+matlabAPP <|-- debugApp
+
+class client{
+    -TrainDispatch trainDispatch
+    +string usrID
+    -int level2Book
+    -int[2] remainingSeats
+    -Ticket[] searchedTickets
+    -Ticket currentTicket
+
+-void showTickets(app,tickets)
+-void writeTicketPanel(app,DorT,index,startStation,startTime,ToStation,ToTime,trainCode,price)
++void setOtherPassengers(app,usrs)
+    -void refreshSeatOccupyUI()
+    -void bookTicketCommon(app,isDirect,indexOfTicket)
+    -void restoreMyTicketBtn(app)
+    -void showRecentTicket(app)
+    -void refreshMyTicketsTable(app)
+
+    -void SearchButtonPushed(app, event)
+    -void BackBtnInTicketPushed(app, event)
+    -void BackBtnInBookButtonPushed(app, event)
+    -void bookTicketBtn1ButtonPushed(app, event)
+    -void normalSeatImgImageClicked(app, event)
+    -void VIPSeatImgImageClicked(app, event)
+    -void BookBtnButtonPushed(app, event)
+    -void bookTicketBtn2ButtonPushed(app, event)
+    -void bookTicketBtn3ButtonPushed(app, event)
+    -void bookTicketBtn4ButtonPushed(app, event)
+    -void bookTicketBtn5ButtonPushed(app, event)
+    -void bookTicketBtn6ButtonPushed(app, event)
+    -void MyTicketsButtonPushed(app, event)
+    -void backBtnInMyticketsImageClicked(app, event)
+    -void myticket_inputID_checkBoxValueChanged(app, event)
+    -void MyticketCancelBtnButtonPushed(app, event)
+    -void MyticketRescheduleBtnButtonPushed(app, event)
+    -void TabGroupSelectionChanged(app, event)
+    -void SortByEarilestButtonPushed(app, event)
+    -void SortByTimeButtonPushed(app, event)
+    -void SortByPriceBtnButtonPushed(app, event)
+    -void getTrainBtnButtonPushed(app, event)
+    -void FreshBtnPushed(app, event)
+}
+enum myStatus{
+    IDLE
+    ONBOARD
+}
+TrainDispatch "1" *-- "1" client
+matlabAPP <|-- client
+
+class Passanger{
+    +string passangerName
+    +int myStatus
+    +Ticket[] myTickets
+
+    +Passanger Passanger(string name)
+    +bool isHasBoughtTicket(app,ticket)
+    +string getMyStatus(app)
+    +void removeTicket(app,ticket)
+}
+class Ticket{
+    bool isDorT
+    Train[] trainSeq
+    string trainCode
+    Station startStation
+    Station toStation
+    datetime allTime
+    int price
+    int seatLevel
+}
+
+Passanger *-- myStatus
+Passanger "1" *-- "0..n" Ticket : 拥有 >
+
+TrainDispatch "1" *-- "1..n" Passanger : 管理 >
+
+Ticket "1" o-- "1..n" Train : 线路包含 >
+Ticket "1" o-- "2" Station : 从到 >
+
+@enduml
