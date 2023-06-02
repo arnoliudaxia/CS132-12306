@@ -872,9 +872,19 @@ classdef TrainDispatch < handle
             % 先check一下是否有座位
             availableSeats=app.requestAvailableSeats(ticket.trainSeq, ticket.fromStation, ticket.toStation);
             if availableSeats(level)<1
+                disp("没有座位了");
                 output=false;
                 return;
             end
+            % 再check一下是不是买过票了
+            usr = app.findUsr(usrName);
+            if usr.isHasBoughtTicket(ticket)
+                disp("已经买过票了");
+                output=false;
+                return;
+            end
+
+            % 没问题了，买票
             output=true;
 
             if length(ticket.trainSeq) > 1

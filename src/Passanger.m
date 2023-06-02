@@ -16,12 +16,19 @@ classdef Passanger<handle
         end
     end
     methods (Access = public)
-        function obj = bookTicket(app,ticket)
-            fprintf("Passanger %s books ticket from %s to %s\n",app.passangerName,ticket.fromStation.stationName,ticket.toStation.stationName)
-            if ticket.isOcupied==0
-                app.myTickets=[app.myTickets;ticket];
-                ticket.isOcupied=true;
-                ticket.bookPassanger=app;
+        
+        % 检查是否已经买了票了（不能重复购买）
+        % 返回值：boolean，true代表已经买过了
+        function output = isHasBoughtTicket(app,ticket)
+            output=false;
+            % 遍历myTickets，检查每一个元素的trainCode是否和ticket.trainCode一样
+            for i = 1:length(app.myTickets)
+                theTicket=app.myTickets(i);
+                if strcmp(theTicket.trainCode,ticket.trainCode)
+                    output=true;
+                    return;
+                end
+                
             end
         end
 
